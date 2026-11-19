@@ -4,7 +4,7 @@ Piccolo componente aggiuntivo per young.it, pensato per affiancare **Yoast SEO**
 
 ## Installazione
 
-1. Zippa la cartella `wordpress/young-seo` (o usa `young-seo-1.1.0.zip`).
+1. Zippa la cartella `wordpress/young-seo` (o usa `young-seo-1.1.1.zip`).
 2. WordPress → Plugin → Aggiungi nuovo → Carica plugin → attiva.
 3. Impostazioni → Young SEO: controlla gli interruttori e salva.
 4. Se `/llms.txt` o `/news-sitemap.xml` rispondono 404: Impostazioni → Permalink → **Salva** (rigenera le regole di riscrittura). Funziona comunque `https://young.it/?young_llms=1`.
@@ -14,6 +14,7 @@ Piccolo componente aggiuntivo per young.it, pensato per affiancare **Yoast SEO**
 
 - Sitemap Google News `/news-sitemap.xml` (sostituisce il modulo News di Yoast Premium).
 - Rimozione della meta description duplicata del tema Hello Elementor quando è attivo un plugin SEO.
+- 1.1.1: `news-sitemap.xml` compare una sola volta in `sitemap_index.xml` (il filtro salta se la voce c'è già, per esempio aggiunta da un vecchio snippet).
 
 ## Funzioni (ognuna con il suo interruttore)
 

@@ -17,7 +17,10 @@ class Young_SEO_News {
 		add_filter( 'redirect_canonical', array( __CLASS__, 'no_redirect' ) );
 		add_action( 'transition_post_status', array( __CLASS__, 'invalidate' ), 10, 3 );
 		if ( Young_SEO::enabled( 'news_sitemap' ) ) {
-			add_filter( 'wpseo_sitemap_index', array( __CLASS__, 'yoast_index' ) );
+			// Late priority: anything else that already adds the news sitemap runs first, then we skip.
+			if ( false === has_filter( 'wpseo_sitemap_index', array( __CLASS__, 'yoast_index' ) ) ) {
+				add_filter( 'wpseo_sitemap_index', array( __CLASS__, 'yoast_index' ), 99 );
+			}
 			add_filter( 'robots_txt', array( __CLASS__, 'robots' ), 20, 2 );
 		}
 	}
@@ -110,6 +113,10 @@ class Young_SEO_News {
 	}
 
 	public static function yoast_index( $index ) {
+		// Idempotent: never add a second entry (second pass, old snippet, other plugin).
+		if ( false !== strpos( (string) $index, 'news-sitemap.xml' ) ) {
+			return $index;
+		}
 		$latest  = get_posts( array( 'numberposts' => 1, 'post_status' => 'publish', 'fields' => 'ids' ) );
 		$lastmod = $latest ? get_post_time( 'c', true, $latest[0] ) : gmdate( 'c' );
 		return $index . "<sitemap>\n\t<loc>" . esc_xml( self::url() ) . "</loc>\n\t<lastmod>" . esc_xml( $lastmod ) . "</lastmod>\n</sitemap>\n";
