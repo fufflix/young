@@ -31,4 +31,5 @@ Keyword, titolo SEO ≤60 caratteri, meta description 120-160, riassunto, alt di
 - Preferire immagini vere. Mai sostituire immagini già pubblicate senza richiesta.
 - Mai immagini realistiche generate di persone reali: per loro foto con diritti o screenshot dei canali pubblici.
 - Generatore (in ordine): fino al 15/01/2027 → 1) Google Vertex AI (Nano Banana), 2) Kie.ai, 3) Higgsfield. Dal 15/01/2027 → 1) Higgsfield, 2) Kie.ai.
+- Qualità: immagini nitide, mai sgranate né piccole (sorgente ≥1600 px di lato lungo, niente upscaling di immagini piccole), peso finale ≤400 kB: comprimi JPEG (qualità 80-88) o riduci a 1600 px finché resta sotto soglia, controllando a vista la nitidezza.
 - Copertina 16:9, almeno 1200 px di larghezza; caricare con `upload_image` (`data_base64` per file generati), alt e didascalia ("Immagine generata con AI" se generata); `set_featured`.
