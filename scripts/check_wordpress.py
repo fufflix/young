@@ -47,7 +47,16 @@ def main():
         except urllib.error.HTTPError as error:
             if error.code != 404:
                 raise
-            get("/wp-json/wp/v2/posts?context=edit&per_page=1&_fields=id")
+            try:
+                get("/wp-json/wp/v2/posts?context=edit&per_page=1&_fields=id")
+            except urllib.error.HTTPError as editorial_error:
+                if editorial_error.code != 401:
+                    raise
+                print("API standard: HTTP 401; verifica percorso alternativo WordPress.")
+                get("/?rest_route=/wp/v2/posts&context=edit&per_page=1&_fields=id")
+                print("Percorso alternativo autenticato: configurare il client con rest_route.")
+                print("Nessun contenuto creato o modificato.")
+                return 0
             get("/wp-json/wp/v2/media?context=edit&per_page=1&_fields=id")
             print("Autenticazione WordPress riuscita: accesso editoriale ad articoli e media confermato.")
             print("Endpoint utenti disabilitato; permessi di pubblicazione e caricamento non ancora verificati.")
