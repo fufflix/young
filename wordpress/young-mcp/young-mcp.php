@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       Young MCP
  * Description:       Server MCP (Model Context Protocol) che permette ad assistenti AI autorizzati (Claude Code, Codex) di leggere gli articoli, creare bozze, caricare immagini e ottimizzare la SEO. Accesso solo con token revocabili, legati a un utente WordPress.
- * Version:           1.1.0
+ * Version:           1.2.0
  * Requires at least: 6.2
  * Requires PHP:      7.4
  * Author:            Young.it
@@ -13,7 +13,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'YOUNG_MCP_VERSION', '1.1.0' );
+define( 'YOUNG_MCP_VERSION', '1.2.0' );
 define( 'YOUNG_MCP_DIR', plugin_dir_path( __FILE__ ) );
 
 require_once YOUNG_MCP_DIR . 'includes/class-young-mcp-settings.php';

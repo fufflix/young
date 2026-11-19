@@ -214,6 +214,23 @@ class Young_MCP_Tools {
 				'annotations' => array( 'readOnlyHint' => false, 'destructiveHint' => false, 'idempotentHint' => false, 'openWorldHint' => true ),
 				'handler'     => 'upload_image',
 			),
+			'update_media' => array(
+				'title'       => 'Aggiorna immagine',
+				'description' => 'Aggiorna testo alternativo, titolo, didascalia e/o descrizione di un\'immagine già presente nella libreria media (indica almeno un campo). Se l\'immagine è in evidenza o allegata a un articolo pubblicato vale la regola sulla modifica dei contenuti pubblicati.',
+				'schema'      => array(
+					'type'       => 'object',
+					'properties' => array(
+						'id'          => array( 'type' => 'integer', 'description' => 'ID dell\'immagine (allegato).' ),
+						'alt'         => array( 'type' => 'string', 'description' => 'Testo alternativo: descrivi cosa mostra l\'immagine.' ),
+						'title'       => array( 'type' => 'string' ),
+						'caption'     => array( 'type' => 'string', 'description' => 'Didascalia, includendo credito/fonte.' ),
+						'description' => array( 'type' => 'string' ),
+					),
+					'required'   => array( 'id' ),
+				),
+				'annotations' => array( 'readOnlyHint' => false, 'destructiveHint' => false, 'idempotentHint' => true, 'openWorldHint' => false ),
+				'handler'     => 'update_media',
+			),
 			'update_seo'   => array(
 				'title'       => 'Aggiorna SEO',
 				'description' => 'Aggiorna solo i campi SEO indicati (titolo SEO, meta description, keyword, canonical, noindex, Open Graph e immagine social) senza toccare il testo. Restituisce i valori prima/dopo, registrati anche nel log del plugin.',
@@ -479,6 +496,7 @@ class Young_MCP_Tools {
 		return array(
 			'id'      => (int) $attachment_id,
 			'url'     => wp_get_attachment_url( $attachment_id ),
+			'title'   => get_the_title( $attachment_id ),
 			'alt'     => (string) get_post_meta( $attachment_id, '_wp_attachment_image_alt', true ),
 			'caption' => wp_get_attachment_caption( $attachment_id ),
 		);
@@ -535,6 +553,7 @@ class Young_MCP_Tools {
 				'wordpress_version' => get_bloginfo( 'version' ),
 				'plugin_version'    => YOUNG_MCP_VERSION,
 				'seo_plugin'        => Young_MCP_SEO::plugin(),
+				'young_seo_active'  => defined( 'YOUNG_SEO_VERSION' ) || class_exists( 'Young_SEO' ),
 				'acting_as'         => array(
 					'login'        => $user->user_login,
 					'display_name' => $user->display_name,
@@ -943,6 +962,74 @@ class Young_MCP_Tools {
 			'featured'    => $post_id && ! empty( $args['set_featured'] ),
 		);
 		return array( $data, sprintf( 'immagine #%d da %s%s', $attachment_id, $source, $data['featured'] ? " (in evidenza su #$post_id)" : '' ) );
+	}
+
+	private static function tool_update_media( array $args ) {
+		$id         = (int) $args['id'];
+		$attachment = get_post( $id );
+		if ( ! $attachment || 'attachment' !== $attachment->post_type || ! wp_attachment_is_image( $id ) ) {
+			self::fail( "$id non è un'immagine della libreria media." );
+		}
+		if ( ! current_user_can( 'edit_post', $id ) ) {
+			self::fail( "L'utente collegato al token non può modificare l'immagine $id." );
+		}
+		$fields = array_intersect_key( $args, array_flip( array( 'alt', 'title', 'caption', 'description' ) ) );
+		if ( ! $fields ) {
+			self::fail( 'Indica almeno un campo tra alt, title, caption, description.' );
+		}
+
+		// Posts that show this image: the parent and every post using it as featured image.
+		$post_ids = get_posts(
+			array(
+				'post_type'      => self::POST_TYPES,
+				'post_status'    => self::LIVE_STATUSES,
+				'meta_key'       => '_thumbnail_id', // phpcs:ignore WordPress.DB.SlowDBQuery
+				'meta_value'     => $id, // phpcs:ignore WordPress.DB.SlowDBQuery
+				'fields'         => 'ids',
+				'posts_per_page' => 1,
+			)
+		);
+		if ( $attachment->post_parent ) {
+			$post_ids[] = (int) $attachment->post_parent;
+		}
+		foreach ( $post_ids as $post_id ) {
+			$post = get_post( $post_id );
+			if ( $post && in_array( $post->post_type, self::POST_TYPES, true ) ) {
+				self::assert_can_edit_live( $post );
+			}
+		}
+
+		$alt_before = (string) get_post_meta( $id, '_wp_attachment_image_alt', true );
+		if ( isset( $fields['alt'] ) ) {
+			update_post_meta( $id, '_wp_attachment_image_alt', sanitize_text_field( $fields['alt'] ) );
+		}
+		$update = array();
+		if ( isset( $fields['title'] ) ) {
+			$update['post_title'] = sanitize_text_field( $fields['title'] );
+		}
+		if ( isset( $fields['caption'] ) ) {
+			$update['post_excerpt'] = sanitize_text_field( $fields['caption'] );
+		}
+		if ( isset( $fields['description'] ) ) {
+			$update['post_content'] = sanitize_textarea_field( $fields['description'] );
+		}
+		if ( $update ) {
+			$update['ID'] = $id;
+			$result       = wp_update_post( wp_slash( $update ), true );
+			if ( is_wp_error( $result ) ) {
+				self::fail( $result->get_error_message() );
+			}
+		}
+		clean_post_cache( $id );
+		$alt_after = (string) get_post_meta( $id, '_wp_attachment_image_alt', true );
+
+		$data                = self::image_info( $id );
+		$data['description'] = get_post_field( 'post_content', $id );
+		$data['changed']     = array_keys( $fields );
+		return array(
+			$data,
+			sprintf( 'immagine #%d (%s); alt %s → %s', $id, implode( ', ', array_keys( $fields ) ), wp_json_encode( $alt_before, JSON_UNESCAPED_UNICODE ), wp_json_encode( $alt_after, JSON_UNESCAPED_UNICODE ) ),
+		);
 	}
 
 	private static function tool_update_seo( array $args ) {

@@ -25,6 +25,12 @@ url = "https://young.it/wp-json/young-mcp/v1/mcp"
 bearer_token_env_var = "YOUNG_MCP_TOKEN"
 ```
 
+## Novità 1.2
+
+- Nuovo strumento `update_media`: aggiorna testo alternativo, titolo, didascalia e descrizione di un'immagine già in libreria (almeno un campo). Se l'immagine è in evidenza o allegata a un articolo pubblicato vale l'interruttore "modifica di articoli già pubblicati". Il log registra l'alt prima/dopo.
+- `get_post` restituisce anche il titolo dell'immagine in evidenza.
+- `site_info` indica con `young_seo_active` se il plugin Young SEO è attivo.
+
 ## Novità 1.1
 
 - `upload_image` accetta anche il file stesso: parametro `data_base64` (byte dell'immagine in base64, anche con prefisso `data:image/...;base64,`) in alternativa a `url`. L'origine registrata è "upload-diretto".
@@ -44,6 +50,7 @@ bearer_token_env_var = "YOUNG_MCP_TOKEN"
 | `create_post` | Crea articolo/pagina (predefinito: bozza) | sì |
 | `update_post` | Modifica i campi indicati | sì |
 | `upload_image` | Carica immagine da URL o da file (base64) con alt e didascalia, opz. in evidenza | sì |
+| `update_media` | Alt, titolo, didascalia e descrizione di un'immagine in libreria | sì |
 | `update_seo` | Titolo SEO, description, keyword, canonical, noindex, Open Graph, immagine social | sì |
 
 Nessuno strumento elimina contenuti.
