@@ -42,7 +42,17 @@ def main():
             return json.load(response)
 
     try:
-        profile = get("/wp-json/wp/v2/users/me?context=edit")
+        try:
+            profile = get("/wp-json/wp/v2/users/me?context=edit")
+        except urllib.error.HTTPError as error:
+            if error.code != 404:
+                raise
+            get("/wp-json/wp/v2/posts?context=edit&per_page=1&_fields=id")
+            get("/wp-json/wp/v2/media?context=edit&per_page=1&_fields=id")
+            print("Autenticazione WordPress riuscita: accesso editoriale ad articoli e media confermato.")
+            print("Endpoint utenti disabilitato; permessi di pubblicazione e caricamento non ancora verificati.")
+            print("Nessun contenuto creato o modificato.")
+            return 0
         if not profile.get("id"):
             print("Risposta inattesa: autenticazione non confermata.")
             return 1
