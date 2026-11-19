@@ -7,6 +7,7 @@ import sys
 import urllib.error
 import urllib.parse
 import urllib.request
+import uuid
 
 
 class NoRedirect(urllib.request.HTTPRedirectHandler):
@@ -33,15 +34,26 @@ def main():
     opener = urllib.request.build_opener(NoRedirect())
 
     def get(path):
-        request = urllib.request.Request(url + path, headers={
+        separator = "&" if "?" in path else "?"
+        target = url + path + separator + "young_check=" + uuid.uuid4().hex
+        request = urllib.request.Request(target, headers={
             "Authorization": "Basic " + auth,
             "Accept": "application/json",
             "User-Agent": "Young-WordPress-Check/1.0",
+            "Cache-Control": "no-cache, no-store",
+            "Pragma": "no-cache",
         })
         with opener.open(request, timeout=30) as response:
+            cache = response.headers.get("CF-Cache-Status", "").upper()
+            if cache in {"HIT", "MISS", "DYNAMIC", "BYPASS", "EXPIRED", "REVALIDATED", "STALE", "UPDATING"}:
+                print("Cache Cloudflare: " + cache)
             return json.load(response)
 
     try:
+        index = get("/wp-json/")
+        print("Indice API con credenziali: raggiungibile.")
+        enabled = "application-passwords" in index.get("authentication", {})
+        print("Password applicazioni dichiarate disponibili: " + ("si" if enabled else "no"))
         try:
             profile = get("/wp-json/wp/v2/users/me?context=edit")
         except urllib.error.HTTPError as error:
