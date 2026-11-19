@@ -61,6 +61,13 @@ def main():
         return 0
     except urllib.error.HTTPError as error:
         print("Verifica fallita: HTTP " + str(error.code) + ".")
+        try:
+            detail = json.load(error)
+            code = detail.get("code", "")
+            if isinstance(code, str) and code.replace("_", "").isalnum():
+                print("Codice errore WordPress: " + code[:100])
+        except (ValueError, AttributeError):
+            print("La risposta di errore non proviene dalle API JSON WordPress.")
         print("Controllare credenziali, permessi o eventuali blocchi di sicurezza.")
     except (urllib.error.URLError, TimeoutError, ValueError):
         print("Verifica fallita: connessione o risposta JSON non valida.")
