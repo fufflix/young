@@ -17,6 +17,8 @@ Accesso: endpoint `https://young.it/wp-json/young-mcp/v1/mcp` (token già config
 - Stile: leggi `stile.md` (solo quando scrivi un articolo).
 - Sarcasmo/ironia su scala 0-5: livello 2,5-3. Incisi ironici e riferimenti pop (es. Kung Fu Panda) sì; mai parolacce, mai insulti; l'ironia non sostituisce i fatti.
 - Punteggiatura: MAI la virgola prima della congiunzione "e" (no "No, e non è…"): riformula o usa il punto.
+- Vietate le formule da AI: "Sembra una sfumatura. Non lo è.", "Non è un dettaglio", "Il punto", riassunti a tre elementi ("Tre distinzioni…"), frasi-slogan corte in serie. Scrivi come l'autore: incisi, domande ai lettori, ironia nei fatti.
+- Sottotitoli: precisi nel soggetto (es. "come molti giornali l'hanno raccontata", non "dove i lettori l'hanno vista").
 - Sottotitoli H3 in tondo (non MAIUSCOLO). Niente H1 nel corpo.
 - Attacco con i fatti chiave nelle prime 2-3 frasi; frasi citabili con numero, data, fonte.
 - Ogni dato con fonte linkata (primaria se possibile). Accuse attribuite e al condizionale.
