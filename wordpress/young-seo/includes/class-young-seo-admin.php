@@ -122,6 +122,24 @@ class Young_SEO_Admin {
 							<p><textarea name="<?php echo esc_attr( $opt ); ?>[llms_policy]" rows="3" class="large-text"><?php echo esc_textarea( Young_SEO::get( 'llms_policy' ) ); ?></textarea></p>
 						</td>
 					</tr>
+					<tr>
+						<th scope="row">Meta description del tema</th>
+						<td>
+							<?php self::checkbox( 'theme_meta_fix', 'Evita meta description duplicata del tema' ); ?>
+							<p class="description">Con Yoast o Rank Math attivo rimuove la meta description che il tema Hello Elementor ricava dal riassunto.</p>
+						</td>
+					</tr>
+					<tr>
+						<th scope="row">Sitemap Google News</th>
+						<td>
+							<?php self::checkbox( 'news_sitemap', 'Pubblica /news-sitemap.xml (articoli delle ultime 48 ore)' ); ?>
+							<?php if ( Young_SEO::enabled( 'news_sitemap' ) ) : ?>
+								<a href="<?php echo esc_url( Young_SEO_News::url() ); ?>" target="_blank">Apri</a>
+							<?php endif; ?>
+							<p><label>Nome della testata <input type="text" name="<?php echo esc_attr( $opt ); ?>[news_name]" value="<?php echo esc_attr( Young_SEO::get( 'news_name' ) ); ?>" class="regular-text"></label></p>
+							<p class="description">Esclusi gli articoli con "noindex" in Yoast. Con Yoast attivo la sitemap viene aggiunta al suo indice (sitemap_index.xml); senza Yoast viene indicata in robots.txt.</p>
+						</td>
+					</tr>
 				</table>
 				<?php submit_button(); ?>
 			</form>

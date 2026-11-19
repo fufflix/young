@@ -24,12 +24,14 @@ class Young_SEO_Llms {
 
 	public static function activate() {
 		self::rewrite();
+		Young_SEO_News::rewrite();
 		flush_rewrite_rules();
 	}
 
 	public static function deactivate() {
 		flush_rewrite_rules();
 		delete_transient( self::TRANSIENT );
+		delete_transient( Young_SEO_News::TRANSIENT );
 	}
 
 	public static function query_vars( $vars ) {

@@ -15,6 +15,7 @@ class Young_SEO {
 
 	public static function init() {
 		add_action( 'init', array( __CLASS__, 'register_meta' ) );
+		add_action( 'wp_head', array( __CLASS__, 'remove_theme_description' ), 0 );
 	}
 
 	public static function defaults() {
@@ -27,6 +28,9 @@ class Young_SEO {
 			'old_hosts'       => 'you-ng.it, www.you-ng.it',
 			'llms'            => true,
 			'llms_policy'     => self::DEFAULT_POLICY,
+			'news_sitemap'    => true,
+			'news_name'       => 'YOUng',
+			'theme_meta_fix'  => true,
 		);
 	}
 
@@ -46,7 +50,7 @@ class Young_SEO {
 	public static function sanitize( $input ) {
 		$input = (array) $input;
 		$out   = array();
-		foreach ( array( 'ai_disclosure', 'updated_date', 'author_box', 'domain_fix', 'llms' ) as $key ) {
+		foreach ( array( 'ai_disclosure', 'updated_date', 'author_box', 'domain_fix', 'llms', 'news_sitemap', 'theme_meta_fix' ) as $key ) {
 			$out[ $key ] = ! empty( $input[ $key ] );
 		}
 		$out['disclosure_text'] = sanitize_textarea_field( $input['disclosure_text'] ?? '' );
@@ -55,7 +59,9 @@ class Young_SEO {
 		}
 		$out['old_hosts']   = implode( ', ', self::parse_hosts( $input['old_hosts'] ?? '' ) );
 		$out['llms_policy'] = sanitize_textarea_field( $input['llms_policy'] ?? '' );
+		$out['news_name']   = sanitize_text_field( $input['news_name'] ?? '' );
 		delete_transient( 'young_seo_llms' );
+		delete_transient( 'young_seo_news' );
 		return $out;
 	}
 
@@ -71,6 +77,13 @@ class Young_SEO {
 			}
 		}
 		return array_values( array_unique( $hosts ) );
+	}
+
+	/** hello-elementor prints its own meta description: drop it when an SEO plugin does the job. */
+	public static function remove_theme_description() {
+		if ( self::enabled( 'theme_meta_fix' ) && ( defined( 'WPSEO_VERSION' ) || defined( 'RANK_MATH_VERSION' ) ) ) {
+			remove_action( 'wp_head', 'hello_elementor_add_description_meta_tag' );
+		}
 	}
 
 	public static function register_meta() {

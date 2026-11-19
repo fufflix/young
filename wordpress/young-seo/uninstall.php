@@ -8,3 +8,4 @@ defined( 'WP_UNINSTALL_PLUGIN' ) || exit;
 
 delete_option( 'young_seo_settings' );
 delete_transient( 'young_seo_llms' );
+delete_transient( 'young_seo_news' );
