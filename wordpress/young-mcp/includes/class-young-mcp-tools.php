@@ -37,6 +37,7 @@ class Young_MCP_Tools {
 				'noindex'        => array( 'type' => 'boolean', 'description' => 'true = escludi da Google; false = impostazione predefinita del sito.' ),
 				'og_title'       => array( 'type' => 'string', 'description' => 'Titolo per anteprime social (Facebook/Open Graph).' ),
 				'og_description' => array( 'type' => 'string', 'description' => 'Descrizione per anteprime social.' ),
+				'og_image'       => array( 'type' => array( 'integer', 'string' ), 'description' => 'Immagine per anteprime social (Facebook/X): ID di un\'immagine della libreria media oppure URL dell\'immagine. Stringa vuota = ripristina.' ),
 			),
 		);
 	}
@@ -194,12 +195,13 @@ class Young_MCP_Tools {
 				'handler'     => 'list_media',
 			),
 			'upload_image' => array(
-				'title'       => 'Carica immagine da URL',
-				'description' => 'Scarica un\'immagine da un URL pubblico nella libreria media, con testo alternativo e didascalia; opzionalmente la imposta come immagine in evidenza di un articolo. Usa solo immagini di cui la testata ha i diritti.',
+				'title'       => 'Carica immagine',
+				'description' => 'Carica un\'immagine nella libreria media, scaricandola da un URL pubblico (url) oppure dai byte del file in base64 (data_base64, es. un file locale): indica esattamente uno dei due. Imposta testo alternativo e didascalia; opzionalmente la imposta come immagine in evidenza di un articolo. Usa solo immagini di cui la testata ha i diritti.',
 				'schema'      => array(
 					'type'       => 'object',
 					'properties' => array(
-						'url'          => array( 'type' => 'string', 'description' => 'URL http(s) dell\'immagine (JPEG, PNG, GIF, WebP, AVIF).' ),
+						'url'          => array( 'type' => 'string', 'description' => 'URL http(s) dell\'immagine (JPEG, PNG, GIF, WebP, AVIF). In alternativa a data_base64.' ),
+						'data_base64'  => array( 'type' => 'string', 'description' => 'Contenuto del file immagine codificato in base64 (anche con prefisso "data:image/...;base64,"). In alternativa a url.' ),
 						'alt'          => array( 'type' => 'string', 'description' => 'Testo alternativo (accessibilità e SEO): descrivi cosa mostra l\'immagine.' ),
 						'title'        => array( 'type' => 'string' ),
 						'caption'      => array( 'type' => 'string', 'description' => 'Didascalia, includendo credito/fonte.' ),
@@ -207,14 +209,14 @@ class Young_MCP_Tools {
 						'post_id'      => array( 'type' => 'integer', 'description' => 'Articolo a cui collegare l\'immagine.' ),
 						'set_featured' => array( 'type' => 'boolean', 'description' => 'Imposta come immagine in evidenza di post_id.' ),
 					),
-					'required'   => array( 'url', 'alt' ),
+					'required'   => array( 'alt' ),
 				),
 				'annotations' => array( 'readOnlyHint' => false, 'destructiveHint' => false, 'idempotentHint' => false, 'openWorldHint' => true ),
 				'handler'     => 'upload_image',
 			),
 			'update_seo'   => array(
 				'title'       => 'Aggiorna SEO',
-				'description' => 'Aggiorna solo i campi SEO indicati (titolo SEO, meta description, keyword, canonical, noindex, Open Graph) senza toccare il testo. Restituisce i valori prima/dopo, registrati anche nel log del plugin.',
+				'description' => 'Aggiorna solo i campi SEO indicati (titolo SEO, meta description, keyword, canonical, noindex, Open Graph e immagine social) senza toccare il testo. Restituisce i valori prima/dopo, registrati anche nel log del plugin.',
 				'schema'      => array(
 					'type'       => 'object',
 					'properties' => $seo_props,
@@ -489,6 +491,14 @@ class Young_MCP_Tools {
 				$seo[ $field ] = $args[ $field ];
 			}
 		}
+		if ( array_key_exists( 'og_image', $seo ) ) {
+			// Resolved before anything is written, so an invalid image leaves the post untouched.
+			$resolved = Young_MCP_SEO::resolve_og_image( $seo['og_image'] );
+			if ( is_string( $resolved ) && '' !== $resolved ) {
+				self::fail( $resolved );
+			}
+			$seo['og_image'] = $resolved;
+		}
 		return $seo;
 	}
 
@@ -622,6 +632,7 @@ class Young_MCP_Tools {
 			self::fail( 'L\'utente collegato al token non può creare contenuti di tipo ' . $type . '.' );
 		}
 		self::assert_status_allowed( $status, $type );
+		$seo = ! empty( $args['seo'] ) ? self::seo_input( $args['seo'] ) : array();
 
 		$postarr = array(
 			'post_type'    => $type,
@@ -671,8 +682,8 @@ class Young_MCP_Tools {
 		if ( ! empty( $args['featured_media'] ) ) {
 			set_post_thumbnail( $id, $args['featured_media'] );
 		}
-		if ( ! empty( $args['seo'] ) ) {
-			Young_MCP_SEO::update( $id, self::seo_input( $args['seo'] ) );
+		if ( $seo ) {
+			Young_MCP_SEO::update( $id, $seo );
 		}
 
 		$post = get_post( $id );
@@ -687,6 +698,7 @@ class Young_MCP_Tools {
 	private static function tool_update_post( array $args ) {
 		$post = self::load_post( $args['id'] );
 		self::assert_can_edit_live( $post );
+		$seo = ! empty( $args['seo'] ) ? self::seo_input( $args['seo'] ) : array();
 
 		$postarr = array( 'ID' => $post->ID );
 		$changed = array();
@@ -757,8 +769,8 @@ class Young_MCP_Tools {
 			$changed[] = 'featured_media';
 		}
 		$seo_diff = array();
-		if ( ! empty( $args['seo'] ) ) {
-			$seo_diff  = self::seo_diff( Young_MCP_SEO::update( $post->ID, self::seo_input( $args['seo'] ) ) );
+		if ( $seo ) {
+			$seo_diff  = self::seo_diff( Young_MCP_SEO::update( $post->ID, $seo ) );
 			$changed[] = 'seo';
 		}
 
@@ -851,30 +863,59 @@ class Young_MCP_Tools {
 			self::fail( 'Per impostare l\'immagine in evidenza indica post_id.' );
 		}
 
-		$url = esc_url_raw( $args['url'], array( 'http', 'https' ) );
-		if ( ! $url || ! wp_http_validate_url( $url ) ) {
-			self::fail( 'URL non valido o non raggiungibile in modo sicuro.' );
+		$has_url  = isset( $args['url'] ) && '' !== trim( $args['url'] );
+		$has_data = isset( $args['data_base64'] ) && '' !== trim( $args['data_base64'] );
+		if ( $has_url === $has_data ) {
+			self::fail( 'Indica esattamente uno tra url e data_base64.' );
 		}
 
 		require_once ABSPATH . 'wp-admin/includes/file.php';
 		require_once ABSPATH . 'wp-admin/includes/media.php';
 		require_once ABSPATH . 'wp-admin/includes/image.php';
 
-		$tmp = download_url( $url, 30 );
-		if ( is_wp_error( $tmp ) ) {
-			self::fail( 'Download non riuscito: ' . $tmp->get_error_message() );
+		if ( $has_url ) {
+			$url = esc_url_raw( $args['url'], array( 'http', 'https' ) );
+			if ( ! $url || ! wp_http_validate_url( $url ) ) {
+				self::fail( 'URL non valido o non raggiungibile in modo sicuro.' );
+			}
+			$tmp = download_url( $url, 30 );
+			if ( is_wp_error( $tmp ) ) {
+				self::fail( 'Download non riuscito: ' . $tmp->get_error_message() );
+			}
+			$source = $url;
+		} else {
+			$url  = '';
+			$data = preg_replace( '/^data:[a-z0-9.+\/-]+;base64,/i', '', trim( $args['data_base64'] ) );
+			$data = preg_replace( '/\s+/', '', $data );
+			// Rough pre-check on the encoded size (base64 is ~4/3 of the bytes).
+			if ( strlen( $data ) > wp_max_upload_size() * 4 / 3 + 4 ) {
+				self::fail( 'Immagine più grande del limite di caricamento del sito (' . size_format( wp_max_upload_size() ) . ').' );
+			}
+			$bytes = '' !== $data ? base64_decode( $data, true ) : false; // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_decode
+			if ( false === $bytes || '' === $bytes ) {
+				self::fail( 'data_base64 non è un contenuto base64 valido.' );
+			}
+			$tmp = wp_tempnam( 'young-mcp-upload' );
+			if ( ! $tmp || false === file_put_contents( $tmp, $bytes ) ) { // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_file_put_contents
+				if ( $tmp ) {
+					wp_delete_file( $tmp );
+				}
+				self::fail( 'Impossibile scrivere il file temporaneo.' );
+			}
+			unset( $bytes, $data );
+			$source = 'upload-diretto';
 		}
 		$mime = wp_get_image_mime( $tmp );
 		if ( ! $mime || ! isset( self::IMAGE_MIMES[ $mime ] ) ) {
 			wp_delete_file( $tmp );
-			self::fail( 'Il file scaricato non è un\'immagine JPEG, PNG, GIF, WebP o AVIF.' );
+			self::fail( 'Il file ' . ( $has_url ? 'scaricato' : 'caricato' ) . ' non è un\'immagine JPEG, PNG, GIF, WebP o AVIF.' );
 		}
 		if ( filesize( $tmp ) > wp_max_upload_size() ) {
 			wp_delete_file( $tmp );
 			self::fail( 'Immagine più grande del limite di caricamento del sito (' . size_format( wp_max_upload_size() ) . ').' );
 		}
 
-		$base = ! empty( $args['filename'] ) ? $args['filename'] : pathinfo( (string) wp_parse_url( $url, PHP_URL_PATH ), PATHINFO_FILENAME );
+		$base = ! empty( $args['filename'] ) ? $args['filename'] : ( $has_url ? pathinfo( (string) wp_parse_url( $url, PHP_URL_PATH ), PATHINFO_FILENAME ) : 'immagine' );
 		$base = sanitize_title( preg_replace( '/\.[a-z0-9]{2,5}$/i', '', $base ) );
 		$name = ( '' !== $base ? $base : 'immagine' ) . '.' . self::IMAGE_MIMES[ $mime ];
 
@@ -891,7 +932,7 @@ class Young_MCP_Tools {
 		}
 
 		update_post_meta( $attachment_id, '_wp_attachment_image_alt', wp_slash( sanitize_text_field( $args['alt'] ) ) );
-		update_post_meta( $attachment_id, '_young_mcp_source_url', esc_url_raw( $url ) );
+		update_post_meta( $attachment_id, '_young_mcp_source_url', $has_url ? esc_url_raw( $url ) : $source );
 
 		if ( $post_id && ! empty( $args['set_featured'] ) ) {
 			set_post_thumbnail( $post_id, $attachment_id );
@@ -901,7 +942,7 @@ class Young_MCP_Tools {
 			'attached_to' => $post_id,
 			'featured'    => $post_id && ! empty( $args['set_featured'] ),
 		);
-		return array( $data, sprintf( 'immagine #%d da %s%s', $attachment_id, $url, $data['featured'] ? " (in evidenza su #$post_id)" : '' ) );
+		return array( $data, sprintf( 'immagine #%d da %s%s', $attachment_id, $source, $data['featured'] ? " (in evidenza su #$post_id)" : '' ) );
 	}
 
 	private static function tool_update_seo( array $args ) {

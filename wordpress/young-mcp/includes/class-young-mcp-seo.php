@@ -8,7 +8,7 @@ defined( 'ABSPATH' ) || exit;
 
 class Young_MCP_SEO {
 
-	const FIELDS = array( 'title', 'description', 'focus_keyword', 'canonical', 'noindex', 'og_title', 'og_description' );
+	const FIELDS = array( 'title', 'description', 'focus_keyword', 'canonical', 'noindex', 'og_title', 'og_description', 'og_image' );
 
 	const META = array(
 		'yoast'    => array(
@@ -19,6 +19,7 @@ class Young_MCP_SEO {
 			'noindex'        => '_yoast_wpseo_meta-robots-noindex',
 			'og_title'       => '_yoast_wpseo_opengraph-title',
 			'og_description' => '_yoast_wpseo_opengraph-description',
+			'og_image'       => '_yoast_wpseo_opengraph-image',
 		),
 		'rankmath' => array(
 			'title'          => 'rank_math_title',
@@ -28,6 +29,7 @@ class Young_MCP_SEO {
 			'noindex'        => 'rank_math_robots',
 			'og_title'       => 'rank_math_facebook_title',
 			'og_description' => 'rank_math_facebook_description',
+			'og_image'       => 'rank_math_facebook_image',
 		),
 		'none'     => array(
 			'title'          => '_young_mcp_seo_title',
@@ -37,6 +39,7 @@ class Young_MCP_SEO {
 			'noindex'        => '_young_mcp_seo_noindex',
 			'og_title'       => '_young_mcp_seo_og_title',
 			'og_description' => '_young_mcp_seo_og_description',
+			'og_image'       => '_young_mcp_seo_og_image',
 		),
 	);
 
@@ -87,6 +90,10 @@ class Young_MCP_SEO {
 				self::write_noindex( $plugin, $post_id, $key, (bool) $value );
 				continue;
 			}
+			if ( 'og_image' === $field ) {
+				self::write_og_image( $plugin, $post_id, $value );
+				continue;
+			}
 
 			$value = 'canonical' === $field ? esc_url_raw( (string) $value ) : sanitize_text_field( (string) $value );
 			if ( '' === $value ) {
@@ -101,6 +108,81 @@ class Young_MCP_SEO {
 			'before' => $before,
 			'after'  => self::get( $post_id ),
 		);
+	}
+
+	/**
+	 * Normalizes an og_image value: attachment ID (int or digits) or image URL.
+	 * Returns array( 'id' => int, 'url' => string ), '' to reset, or an error
+	 * message (non-empty string) when the value is not usable.
+	 */
+	public static function resolve_og_image( $value ) {
+		if ( is_array( $value ) ) {
+			return $value; // Already resolved.
+		}
+		if ( is_int( $value ) || ( is_string( $value ) && preg_match( '/^\d+$/', trim( $value ) ) ) ) {
+			$id = (int) $value;
+			if ( $id <= 0 ) {
+				return 'og_image: ID immagine non valido.';
+			}
+			$url = wp_attachment_is_image( $id ) ? wp_get_attachment_url( $id ) : false;
+			if ( ! $url ) {
+				return "og_image: $id non è un'immagine della libreria media.";
+			}
+			return array(
+				'id'  => $id,
+				'url' => $url,
+			);
+		}
+		$value = trim( (string) $value );
+		if ( '' === $value ) {
+			return array();
+		}
+		$url = esc_url_raw( $value, array( 'http', 'https' ) );
+		if ( ! $url ) {
+			return 'og_image: indica l\'ID di un\'immagine della libreria media o un URL http(s).';
+		}
+		$id = attachment_url_to_postid( $url );
+		return array(
+			'id'  => ( $id && wp_attachment_is_image( $id ) ) ? (int) $id : 0,
+			'url' => $url,
+		);
+	}
+
+	private static function write_og_image( $plugin, $post_id, $value ) {
+		$image = self::resolve_og_image( $value );
+		if ( is_string( $image ) ) {
+			throw new Young_MCP_Tool_Error( $image );
+		}
+		$pairs = array(
+			'yoast'    => array(
+				'_yoast_wpseo_opengraph-image' => '_yoast_wpseo_opengraph-image-id',
+				'_yoast_wpseo_twitter-image'   => '_yoast_wpseo_twitter-image-id',
+			),
+			'rankmath' => array( 'rank_math_facebook_image' => 'rank_math_facebook_image_id' ),
+			'none'     => array( '_young_mcp_seo_og_image' => '' ),
+		);
+		foreach ( $pairs[ $plugin ] as $url_key => $id_key ) {
+			if ( ! $image ) {
+				delete_post_meta( $post_id, $url_key );
+				if ( $id_key ) {
+					delete_post_meta( $post_id, $id_key );
+				}
+				continue;
+			}
+			update_post_meta( $post_id, $url_key, wp_slash( $image['url'] ) );
+			if ( $id_key ) {
+				if ( $image['id'] ) {
+					update_post_meta( $post_id, $id_key, (string) $image['id'] );
+				} else {
+					delete_post_meta( $post_id, $id_key );
+				}
+			}
+		}
+		if ( 'rankmath' === $plugin ) {
+			if ( $image ) {
+				update_post_meta( $post_id, 'rank_math_twitter_use_facebook', 'on' );
+			}
+		}
 	}
 
 	private static function read_noindex( $plugin, $value ) {
@@ -188,6 +270,17 @@ class Young_MCP_SEO {
 				if ( '' !== $seo['description'] ) {
 					echo '<meta name="description" content="' . esc_attr( $seo['description'] ) . '" />' . "\n";
 				}
+				$og = array(
+					'og:title'       => $seo['og_title'],
+					'og:description' => $seo['og_description'],
+					'og:image'       => $seo['og_image'],
+				);
+				foreach ( $og as $property => $content ) {
+					if ( '' !== $content ) {
+						$content = 'og:image' === $property ? esc_url( $content ) : esc_attr( $content );
+						echo '<meta property="' . esc_attr( $property ) . '" content="' . $content . '" />' . "\n"; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+					}
+				}
 			},
 			1
 		);
@@ -211,6 +304,7 @@ class Young_MCP_SEO {
 		$dom = self::parse( $content );
 		$h1  = $dom ? $dom->getElementsByTagName( 'h1' )->length : 0;
 		$h2  = $dom ? $dom->getElementsByTagName( 'h2' )->length : 0;
+		$h3  = $dom ? $dom->getElementsByTagName( 'h3' )->length : 0;
 
 		$images      = array();
 		$missing_alt = array();
@@ -298,7 +392,7 @@ class Young_MCP_SEO {
 
 		$add( 'word_count', $wcount >= 300 ? 'ok' : 'warn', sprintf( '%d parole (sotto 300 il testo rischia di essere considerato poco approfondito; per le brevi di cronaca può essere accettabile).', $wcount ) );
 		$add( 'h1_in_content', 0 === $h1 ? 'ok' : 'warn', 0 === $h1 ? 'Nessun H1 nel corpo (corretto: il titolo è già H1).' : sprintf( '%d H1 nel corpo: trasformali in H2.', $h1 ) );
-		$add( 'subheadings', ( $wcount < 400 || $h2 > 0 ) ? 'ok' : 'warn', sprintf( '%d sottotitoli H2.', $h2 ) );
+		$add( 'subheadings', ( $wcount < 400 || $h2 + $h3 > 0 ) ? 'ok' : 'warn', sprintf( '%d sottotitoli (%d H2, %d H3).', $h2 + $h3, $h2, $h3 ) );
 		$add( 'image_alt', $missing_alt ? 'warn' : 'ok', sprintf( '%d immagini nel corpo, %d senza testo alternativo.', count( $images ), count( $missing_alt ) ) );
 		$add( 'internal_links', $internal > 0 ? 'ok' : 'warn', sprintf( '%d link interni.', $internal ) );
 		$add( 'external_links', $external > 0 ? 'ok' : 'warn', sprintf( '%d link esterni (le fonti autorevoli citate rafforzano verificabilità e credibilità).', $external ) );

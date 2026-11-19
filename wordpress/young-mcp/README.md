@@ -25,6 +25,12 @@ url = "https://young.it/wp-json/young-mcp/v1/mcp"
 bearer_token_env_var = "YOUNG_MCP_TOKEN"
 ```
 
+## Novità 1.1
+
+- `upload_image` accetta anche il file stesso: parametro `data_base64` (byte dell'immagine in base64, anche con prefisso `data:image/...;base64,`) in alternativa a `url`. L'origine registrata è "upload-diretto".
+- Nuovo campo SEO `og_image` (immagine per anteprime social) in `update_seo` e nell'oggetto `seo` di `create_post`/`update_post`: ID di un'immagine della libreria o URL; stringa vuota per ripristinare. Scritto nei campi Open Graph e Twitter di Yoast o Rank Math; senza plugin SEO il plugin stampa i meta `og:image`, `og:title` e `og:description`.
+- `seo_audit` conta come sottotitoli sia gli H2 sia gli H3 (stile della redazione).
+
 ## Strumenti
 
 | Strumento | Cosa fa | Scrive? |
@@ -34,11 +40,11 @@ bearer_token_env_var = "YOUNG_MCP_TOKEN"
 | `get_post` | Articolo completo: corpo, tassonomie, immagine, SEO | no |
 | `list_terms` | Categorie e tag esistenti | no |
 | `list_media` | Immagini già in libreria | no |
-| `seo_audit` | Analisi SEO euristica (titolo, description, keyword, H2, alt, link) | no |
+| `seo_audit` | Analisi SEO euristica (titolo, description, keyword, H2/H3, alt, link) | no |
 | `create_post` | Crea articolo/pagina (predefinito: bozza) | sì |
 | `update_post` | Modifica i campi indicati | sì |
-| `upload_image` | Importa immagine da URL con alt e didascalia, opz. in evidenza | sì |
-| `update_seo` | Titolo SEO, description, keyword, canonical, noindex, Open Graph | sì |
+| `upload_image` | Carica immagine da URL o da file (base64) con alt e didascalia, opz. in evidenza | sì |
+| `update_seo` | Titolo SEO, description, keyword, canonical, noindex, Open Graph, immagine social | sì |
 
 Nessuno strumento elimina contenuti.
 
@@ -54,7 +60,7 @@ Nessuno strumento elimina contenuti.
 
 ## SEO
 
-Rileva automaticamente **Yoast SEO** o **Rank Math** e scrive nei loro campi. Con Yoast ricostruisce l'"indexable" del post, così i nuovi valori compaiono subito sul sito. Senza plugin SEO salva i campi in proprio e stampa meta description, titolo, canonical e noindex.
+Rileva automaticamente **Yoast SEO** o **Rank Math** e scrive nei loro campi. Con Yoast ricostruisce l'"indexable" del post, così i nuovi valori compaiono subito sul sito. Senza plugin SEO salva i campi in proprio e stampa meta description, titolo, canonical, noindex e meta Open Graph (titolo, descrizione, immagine).
 
 ## Problemi frequenti
 
