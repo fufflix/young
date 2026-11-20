@@ -4,6 +4,8 @@ Ogni lavoro su young.it segue la skill young-automation (caricata qui sotto). Pr
 
 @.claude/skills/young-automation/SKILL.md
 
+**Regola generale: mai chiedere all'autore di mettere chiavi segrete nelle variabili d'ambiente (restano in chiaro); solo segreti cifrati (es. segreti del programma su Cloudflare) o il modulo sicuro delle credenziali.**
+
 ## Infrastruttura Fufflix (dati forniti dall'autore il 20/11/2026)
 - Sito: WordPress completo su `fufflix.it` (ortografia confermata dall'autore con due "f").
 - Dominio registrato su Register. Hosting: VPS su OVH. DNS e gestione del dominio: interamente su Cloudflare.
