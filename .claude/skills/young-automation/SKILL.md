@@ -27,6 +27,16 @@ Accesso: endpoint `https://young.it/wp-json/young-mcp/v1/mcp` (token già config
 - La dicitura AI in fondo la aggiunge il plugin Young SEO in automatico: non scriverla nel testo.
 - Categorie: solo esistenti (`list_terms`).
 
+## Contenuti sponsorizzati
+- Ogni sponsored post apre con l'etichetta "Sponsored post" in alto a sinistra, come primo blocco del corpo: badge ambrato nel colore del pulsante "Sostienici" del sito (#F49814), testo quasi nero del sito (#171615, contrasto ~9:1), piccolo ma leggibile. Markup da copiare identico:
+  ```html
+  <!-- wp:paragraph {"className":"sponsored-label"} -->
+  <p class="sponsored-label" style="margin:0 0 14px 0;text-align:left"><span style="display:inline-block;background:#F49814;color:#171615;font-size:11px;font-weight:700;line-height:1;text-transform:uppercase;letter-spacing:0.08em;padding:5px 9px;border-radius:4px">Sponsored post</span></p>
+  <!-- /wp:paragraph -->
+  ```
+- Link allo sponsor con `rel="sponsored noopener"` e UTM `utm_source=young.it&utm_medium=referral&utm_campaign=fufflix_young&utm_content=<slug>`.
+- Le affermazioni dello sponsor su sé stesso vanno attribuite ("secondo l'azienda", "dichiara"); dati non verificati restano fuori dal testo pubblicato.
+
 ## SEO
 Keyword, titolo SEO ≤60 caratteri, meta description 120-160, riassunto, alt di ogni immagine, `seo_audit` prima della consegna. Titoli e descrizioni sempre difendibili sul piano legale.
 
