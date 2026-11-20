@@ -21,7 +21,7 @@ Pagina del programma, dove si aggiungono (la sezione delle variabili e dei segre
 https://dash.cloudflare.com/?to=/bff31dc76b5c97e35c98e12aaea31dc2/workers/services/view/anteprime-newsletter/production/settings
 
 ## Variabili già impostate (testo normale)
-`GHOST_URL` = `https://fufflix.ghost.io`, `NEWSLETTER_NAME` = `Fuflix la newsletter`, `EMAIL_ONLY` = `true`, `ALLOW_SEND` = `no`.
+`GHOST_URL` = `https://fufflix.ghost.io`, `NEWSLETTER_NAME` = `Fufflix - La Newsletter`, `EMAIL_ONLY` = `true`, `ALLOW_SEND` = `no`.
 
 ## Da verificare al primo uso (non confermato dalla documentazione pubblica)
 - L'indirizzo per l'email di prova (`POST /email_previews/posts/<id>/`) è quello usato dal pannello di Ghost, non è documentato pubblicamente.

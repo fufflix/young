@@ -12,6 +12,6 @@ id = "cb72bd3e79aa4b359e6813ba32713317"
 
 [vars]
 GHOST_URL = "https://fufflix.ghost.io"
-NEWSLETTER_NAME = "Fuflix la newsletter"
+NEWSLETTER_NAME = "Fufflix - La Newsletter"
 EMAIL_ONLY = "true"
 ALLOW_SEND = "no"

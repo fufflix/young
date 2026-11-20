@@ -442,7 +442,7 @@ async function ghost(env, method, path, body) {
 }
 
 async function findNewsletter(env) {
-  const wanted = String(env.NEWSLETTER_NAME || 'Fuflix la newsletter').trim().toLowerCase();
+  const wanted = String(env.NEWSLETTER_NAME || 'Fufflix - La Newsletter').trim().toLowerCase();
   const data = await ghost(env, 'GET', '/newsletters/?limit=all');
   const active = (data.newsletters || []).filter((n) => n.status === 'active');
   const match = active.filter((n) => String(n.name).trim().toLowerCase() === wanted);
@@ -477,7 +477,7 @@ async function syncGhostDraft(env, d) {
 
 async function ghostCheck(env) {
   const data = await ghost(env, 'GET', '/newsletters/?limit=all');
-  const wanted = String(env.NEWSLETTER_NAME || 'Fuflix la newsletter').trim().toLowerCase();
+  const wanted = String(env.NEWSLETTER_NAME || 'Fufflix - La Newsletter').trim().toLowerCase();
   return json({
     newsletters: (data.newsletters || []).map((n) => ({
       name: n.name, slug: n.slug, status: n.status, usata_per_gli_invii: String(n.name).trim().toLowerCase() === wanted,
@@ -688,7 +688,7 @@ async function editorPage(env, id) {
     html: d.html,
     tested,
     sources: d.sources || [],
-    newsletter: String(env.NEWSLETTER_NAME || 'Fuflix la newsletter'),
+    newsletter: String(env.NEWSLETTER_NAME || 'Fufflix - La Newsletter'),
     provaPronta: !!env.EMAIL_PROVA,
     invioAttivo: String(env.ALLOW_SEND || '') === 'yes',
     ghostPronto: !!env.CHIAVE_GHOST,
