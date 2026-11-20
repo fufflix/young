@@ -17,7 +17,7 @@ import time
 import urllib.error
 import urllib.request
 
-URL = os.environ.get("GHOST_URL", "https://newsletter.fufflix.it").rstrip("/")
+URL = os.environ.get("GHOST_URL", "https://fufflix.ghost.io").rstrip("/")
 
 
 def b64(b):
