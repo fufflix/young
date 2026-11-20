@@ -1,0 +1,43 @@
+name: Plugin Young MCP
+
+on:
+  push:
+    paths:
+      - "wordpress/young-mcp/**"
+      - ".github/workflows/young-mcp.yml"
+  workflow_dispatch:
+    inputs:
+      check_live:
+        description: "Verifica in sola lettura l'endpoint MCP su young.it (richiede il secret YOUNG_MCP_TOKEN)"
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Controllo sintassi PHP
+        run: find wordpress/young-mcp -name '*.php' -print0 | xargs -0 -n1 php -l
+      - name: Crea lo zip installabile
+        run: cd wordpress && zip -r ../young-mcp.zip young-mcp -x '*/README.md'
+      - uses: actions/upload-artifact@v4
+        with:
+          name: young-mcp-plugin
+          path: young-mcp.zip
+
+  check-live:
+    if: github.event_name == 'workflow_dispatch' && inputs.check_live
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verifica endpoint MCP senza modificare contenuti
+        env:
+          WP_URL: ${{ secrets.WP_URL }}
+          YOUNG_MCP_TOKEN: ${{ secrets.YOUNG_MCP_TOKEN }}
+        run: python3 scripts/check_mcp.py
