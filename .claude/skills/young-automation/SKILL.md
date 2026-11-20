@@ -24,7 +24,7 @@ MCP Young: `https://young.it/wp-json/young-mcp/v1/mcp` (JSON-RPC, `tools/call`).
   <p class="sponsored-label" style="margin:0 0 14px 0;text-align:left"><span style="display:inline-block;background:#F49814;color:#171615;font-size:11px;font-weight:700;line-height:1;text-transform:uppercase;letter-spacing:0.08em;padding:5px 9px;border-radius:4px">Sponsored post</span></p>
   <!-- /wp:paragraph -->
   ```
-- Link allo sponsor: `rel` (follow o `sponsored`) lo decide l'autore (vedi `stile.md`); UTM `utm_source=young.it&utm_medium=referral&utm_campaign=fufflix_young&utm_content=<slug>`.
+- Link allo sponsor: pochi (di norma uno, alla pagina che converte), `rel` follow o `sponsored` lo decide l'autore: chiedilo ogni volta (vedi `stile.md`). Deciso finora: Al Pegno 1977, e-commerce `/acquista` follow (`rel="noopener"`). UTM `utm_source=young.it&utm_medium=referral&utm_campaign=fufflix_young&utm_content=<slug>`.
 - Le affermazioni dello sponsor su sé stesso vanno attribuite ("secondo l'azienda", "dichiara"); i dati non verificati restano fuori dal testo pubblicato.
 - Dopo la pubblicazione verifica che il pezzo non compaia in `/news-sitemap.xml` (cache fino a 10 minuti; la modifica dei soli tag non la svuota).
 
