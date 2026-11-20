@@ -30,6 +30,7 @@ export default {
       res = await route(request, env);
     } catch (e) {
       res = json({ error: String((e && e.message) || e) }, (e && e.status) || 500);
+      if (e && e.headers) for (const [k, v] of Object.entries(e.headers)) res.headers.set(k, v);
     }
     const h = new Headers(res.headers);
     h.set('X-Robots-Tag', 'noindex, nofollow, noarchive, nosnippet');
@@ -51,7 +52,7 @@ async function route(request, env) {
 
   if (path === BASE + '/ingest') return ingest(request, env);
 
-  await requireAccess(request, env);
+  await requireLogin(request, env);
 
   const method = request.method;
   let m;
@@ -78,6 +79,43 @@ function checkOrigin(request) {
 /* ------------------------------ sicurezza ------------------------------ */
 
 let jwksCache = { at: 0, keys: null, team: '' };
+
+/**
+ * Login: se sono impostati ACCESS_TEAM_DOMAIN e ACCESS_AUD vale Cloudflare Access;
+ * altrimenti vale la password ANTEPRIME_PASSWORD (almeno 16 caratteri), con blocco
+ * dopo 5 errori in 15 minuti per indirizzo IP. Senza nessuno dei due la pagina resta spenta.
+ */
+async function requireLogin(request, env) {
+  if (String(env.ACCESS_TEAM_DOMAIN || '').trim() && String(env.ACCESS_AUD || '').trim()) {
+    return requireAccess(request, env);
+  }
+  const pwd = String(env.ANTEPRIME_PASSWORD || '');
+  if (pwd.length < 16) {
+    throw new HttpError(503, 'Login non configurato (serve ANTEPRIME_PASSWORD di almeno 16 caratteri): pagina disattivata.');
+  }
+  const ip = request.headers.get('CF-Connecting-IP') || 'sconosciuto';
+  const failKey = 'fail:' + ip;
+  const fails = parseInt((await env.ANTEPRIME.get(failKey)) || '0', 10);
+  if (fails >= 5) throw new HttpError(429, 'Troppi tentativi sbagliati. Riprova tra 15 minuti.');
+  const h = request.headers.get('Authorization') || '';
+  let given = '';
+  if (h.startsWith('Basic ')) {
+    try {
+      const raw = atob(h.slice(6));
+      given = raw.slice(raw.indexOf(':') + 1);
+    } catch {
+      given = '';
+    }
+  }
+  if (given && (await safeEqual(given, pwd))) {
+    if (fails) await env.ANTEPRIME.delete(failKey);
+    return;
+  }
+  if (given) await env.ANTEPRIME.put(failKey, String(fails + 1), { expirationTtl: 900 });
+  const err = new HttpError(401, 'Accesso richiesto.');
+  err.headers = { 'WWW-Authenticate': 'Basic realm="Anteprime newsletter", charset="UTF-8"' };
+  throw err;
+}
 
 async function requireAccess(request, env) {
   const team = String(env.ACCESS_TEAM_DOMAIN || '').trim();
