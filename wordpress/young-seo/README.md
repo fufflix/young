@@ -4,15 +4,11 @@ Piccolo componente aggiuntivo per young.it, pensato per affiancare **Yoast SEO**
 
 ## Installazione
 
-1. Zippa la cartella `wordpress/young-seo` (o usa `young-seo-1.2.0.zip`).
+1. Zippa la cartella `wordpress/young-seo` (o usa `young-seo-1.1.1.zip`).
 2. WordPress → Plugin → Aggiungi nuovo → Carica plugin → attiva.
 3. Impostazioni → Young SEO: controlla gli interruttori e salva.
 4. Se `/llms.txt` o `/news-sitemap.xml` rispondono 404: Impostazioni → Permalink → **Salva** (rigenera le regole di riscrittura). Funziona comunque `https://young.it/?young_llms=1`.
 5. Con Cloudflare/cache di pagina: svuota la cache dopo l'attivazione.
-
-## Novità 1.2
-
-- Link esterni nel testo degli articoli: aperti in una nuova scheda (`target="_blank"`) e marcati `rel="nofollow noopener"` al momento della visualizzazione, senza modificare il database. I link interni (dominio del sito e sottodomini) restano follow; si possono indicare altri domini da lasciare follow.
 
 ## Novità 1.1
 
@@ -29,7 +25,6 @@ Piccolo componente aggiuntivo per young.it, pensato per affiancare **Yoast SEO**
 | Box autore | spento | Avatar, nome, biografia e link del profilo (sito, X, Facebook, LinkedIn, Instagram, YouTube). I campi social usano le stesse chiavi di Yoast (`twitter`, `facebook`, …), quindi alimentano anche lo schema autore di Yoast; vengono aggiunti al profilo solo se mancano. |
 | Vecchio dominio | attiva | Sostituisce al volo `you-ng.it` / `www.you-ng.it` con il dominio attuale nel testo, negli URL delle immagini (anche `srcset`) e in immagine social, canonical e URL Open Graph di Yoast. Il pulsante **Scansione** conta le righe del database che contengono ancora il vecchio dominio, senza modificarle. |
 | Sitemap Google News | attiva | `/news-sitemap.xml` secondo le specifiche Google News: articoli pubblicati nelle ultime 48 ore (max 1000), nome testata (predefinito "YOUng"), lingua `it`, data e titolo. Esclusi gli articoli con noindex in Yoast. Aggiunta all'indice delle sitemap di Yoast (`sitemap_index.xml`); senza Yoast compare in robots.txt. Cache 10 minuti, rigenerata a ogni pubblicazione. Sostituisce il modulo News di Yoast Premium: disinstallalo prima per non avere due sitemap News. |
-| Link esterni | attiva | Ogni link verso un altro dominio nel testo degli articoli si apre in una nuova scheda con `rel="nofollow noopener"` (i valori `rel` già presenti, come `sponsored`, restano). Link interni e domini indicati come eccezione restano follow. Il database non viene modificato. |
 | Meta description del tema | attiva | Con Yoast o Rank Math attivo rimuove la seconda `<meta name="description">` stampata dal tema Hello Elementor (`hello_elementor_add_description_meta_tag`). |
 | llms.txt | attiva | `/llms.txt` in formato [llmstxt.org](https://llmstxt.org): nome e descrizione del sito, nota sulla linea editoriale, le 10 categorie principali e gli ultimi 30 articoli. In cache per un'ora, rigenerato a ogni pubblicazione/modifica. |
 
