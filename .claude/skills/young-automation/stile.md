@@ -29,7 +29,8 @@ Base: 36 articoli firmati 2021-2026 (impaginazione: 27 del 2023-2026). "N/36" = 
 
 ## Fonti e cautele legali
 - Link pochi, solo se necessari: chi ha dato la notizia per primo o in esclusiva (es. Reuters), il documento primario, il testo che si sta mostrando (es. il titolo corretto del Post). Per il resto si attribuisce senza link ("secondo Teleborsa"). Una fonte si linka una volta sola.
-- Ogni link esterno: `target="_blank" rel="nofollow noopener"`. Link interni a young.it: `target="_blank" rel="noopener"`, senza nofollow.
+- Ogni link si apre in una nuova scheda (`target="_blank"`). Fonti giornalistiche e istituzionali e link interni: `rel="noopener"` (follow).
+- Link a pagamento, di partner o clienti, affiliazioni, scambi: `rel="sponsored noopener"` e contenuto dichiarato come sponsorizzato. Siti dei soggetti delle inchieste o poco affidabili: `rel="nofollow noopener"`.
 - Ancora descrittiva ("con questa live", "Nell'articolo su “Domani” a firma di Nello Trocchia"). Date e cifre esatte ("lo scorso 28 luglio", "0,48% di share").
 - Accuse sempre attribuite e al condizionale: "Per la Procura di Roma… avrebbe cagionato"; "presunto/a" in 16/36; "pluripregiudicato" solo con condanne definitive documentate.
 - Formule prudenti: "non ci risulta", "a quanto pare", "sembrerebbe"; i sospetti si pongono come domande.
