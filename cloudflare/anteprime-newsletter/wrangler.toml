@@ -1,0 +1,17 @@
+# Facoltativo: serve solo se pubblichi con wrangler. Dalla dashboard si fa tutto a mano (vedi README.md).
+# NIENTE segreti qui: GHOST_ADMIN_KEY, INGEST_TOKEN, ACCESS_AUD, ACCESS_TEAM_DOMAIN, TEST_EMAIL e ALLOWED_EMAIL
+# si impostano come secret/variabili su Cloudflare.
+name = "anteprime-newsletter"
+main = "src/worker.js"
+compatibility_date = "2026-11-01"
+routes = [{ pattern = "fufflix.it/anteprime*", zone_name = "fufflix.it" }]
+
+[[kv_namespaces]]
+binding = "ANTEPRIME"
+id = "cb72bd3e79aa4b359e6813ba32713317"
+
+[vars]
+GHOST_URL = "https://newsletter.fufflix.it"
+NEWSLETTER_NAME = "Fuflix la newsletter"
+EMAIL_ONLY = "true"
+ALLOW_SEND = "no"
