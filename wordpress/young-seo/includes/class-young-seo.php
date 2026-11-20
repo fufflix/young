@@ -31,6 +31,8 @@ class Young_SEO {
 			'news_sitemap'    => true,
 			'news_name'       => 'YOUng',
 			'theme_meta_fix'  => true,
+			'external_links'  => true,
+			'follow_hosts'    => '',
 		);
 	}
 
@@ -50,7 +52,7 @@ class Young_SEO {
 	public static function sanitize( $input ) {
 		$input = (array) $input;
 		$out   = array();
-		foreach ( array( 'ai_disclosure', 'updated_date', 'author_box', 'domain_fix', 'llms', 'news_sitemap', 'theme_meta_fix' ) as $key ) {
+		foreach ( array( 'ai_disclosure', 'updated_date', 'author_box', 'domain_fix', 'llms', 'news_sitemap', 'theme_meta_fix', 'external_links' ) as $key ) {
 			$out[ $key ] = ! empty( $input[ $key ] );
 		}
 		$out['disclosure_text'] = sanitize_textarea_field( $input['disclosure_text'] ?? '' );
@@ -60,6 +62,7 @@ class Young_SEO {
 		$out['old_hosts']   = implode( ', ', self::parse_hosts( $input['old_hosts'] ?? '' ) );
 		$out['llms_policy'] = sanitize_textarea_field( $input['llms_policy'] ?? '' );
 		$out['news_name']   = sanitize_text_field( $input['news_name'] ?? '' );
+		$out['follow_hosts'] = implode( ', ', self::parse_hosts( $input['follow_hosts'] ?? '' ) );
 		delete_transient( 'young_seo_llms' );
 		delete_transient( 'young_seo_news' );
 		return $out;

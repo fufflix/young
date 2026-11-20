@@ -112,6 +112,14 @@ class Young_SEO_Admin {
 						</td>
 					</tr>
 					<tr>
+						<th scope="row">Link esterni</th>
+						<td>
+							<?php self::checkbox( 'external_links', 'Apri i link esterni in una nuova scheda e marcali nofollow' ); ?>
+							<p><input type="text" name="<?php echo esc_attr( $opt ); ?>[follow_hosts]" value="<?php echo esc_attr( Young_SEO::get( 'follow_hosts' ) ); ?>" class="regular-text" placeholder="es. fufflix.it"></p>
+							<p class="description">Domini da lasciare follow, separati da virgola (sottodomini inclusi). Applicato al testo degli articoli in pagina: il database non viene modificato. I link interni restano follow.</p>
+						</td>
+					</tr>
+					<tr>
 						<th scope="row">llms.txt</th>
 						<td>
 							<?php self::checkbox( 'llms', 'Pubblica /llms.txt (guida al sito per gli assistenti AI)' ); ?>
