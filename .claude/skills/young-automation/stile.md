@@ -28,7 +28,9 @@ Base: 36 articoli firmati 2021-2026 (impaginazione: 27 del 2023-2026). "N/36" = 
 - 650-1300 parole. Elenchi puntati rari.
 
 ## Fonti e cautele legali
-- Link inline su un'ancora descrittiva ("con questa live", "Nell'articolo su “Domani” a firma di Nello Trocchia"). Date e cifre esatte ("lo scorso 28 luglio", "0,48% di share").
+- Link pochi, solo se necessari: chi ha dato la notizia per primo o in esclusiva (es. Reuters), il documento primario, il testo che si sta mostrando (es. il titolo corretto del Post). Per il resto si attribuisce senza link ("secondo Teleborsa"). Una fonte si linka una volta sola.
+- Ogni link esterno: `target="_blank" rel="nofollow noopener"`. Link interni a young.it: `target="_blank" rel="noopener"`, senza nofollow.
+- Ancora descrittiva ("con questa live", "Nell'articolo su “Domani” a firma di Nello Trocchia"). Date e cifre esatte ("lo scorso 28 luglio", "0,48% di share").
 - Accuse sempre attribuite e al condizionale: "Per la Procura di Roma… avrebbe cagionato"; "presunto/a" in 16/36; "pluripregiudicato" solo con condanne definitive documentate.
 - Formule prudenti: "non ci risulta", "a quanto pare", "sembrerebbe"; i sospetti si pongono come domande.
 - Diritto di replica: linka la replica, segnala le domande senza risposta, ricorda che l'indagato "avrà modo e soprattutto diritto di difendersi nelle opportune sedi". Se serve "contattato, non ha risposto", con la data.
