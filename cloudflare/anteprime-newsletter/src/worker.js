@@ -51,6 +51,10 @@ async function route(request, env) {
   if (!env.ANTEPRIME) throw new HttpError(503, 'Binding KV "ANTEPRIME" mancante');
 
   if (path === BASE + '/ingest') return ingest(request, env);
+  if (path === BASE + '/stato' && request.method === 'GET') {
+    await requireToken(request, env);
+    return ghostCheck(env);
+  }
 
   await requireLogin(request, env);
 
@@ -241,6 +245,14 @@ async function listDrafts(env) {
 async function hashDraft(d) {
   const buf = await crypto.subtle.digest('SHA-256', enc.encode(JSON.stringify([d.title, d.html, d.summary || ''])));
   return [...new Uint8Array(buf)].map((x) => x.toString(16).padStart(2, '0')).join('');
+}
+
+/** Stesso codice usato per caricare le bozze: serve anche a controllare il collegamento con Ghost (sola lettura). */
+async function requireToken(request, env) {
+  if (!env.CODICE_BOZZE || String(env.CODICE_BOZZE).length < 24) throw new HttpError(503, 'Codice non configurato');
+  const h = request.headers.get('Authorization') || '';
+  const given = h.startsWith('Bearer ') ? h.slice(7) : '';
+  if (!(await safeEqual(given, String(env.CODICE_BOZZE)))) throw new HttpError(401, 'Non autorizzato');
 }
 
 async function ingest(request, env) {
