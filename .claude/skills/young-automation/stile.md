@@ -20,10 +20,11 @@ Base: 36 articoli firmati 2021-2026 (impaginazione: 27 del 2023-2026). "N/36" = 
 - Titolo "Soggetto: fatto/tesi" ("Caso Oderzo: Ranucci smentito dal suo legale"), oppure una citazione o una domanda ("Perché Roggero è già stato “graziato”").
 - Attacco di inchiesta o notizia: nome in grassetto + apposizione + fatto chiave con cifra nella prima frase (28/36 con grassetto nel primo paragrafo). Editoriale: premessa dichiarata ("Una prima premessa doverosa", "Sì, sappiamo bene che…"). Profilo: una scena.
 - Attacco senza sovraccarico: un fatto per frase, niente frasi da 60-70 parole con quattro informazioni.
-- Paragrafi di 2-4 frasi, ogni tanto una riga sola a effetto.
+- Paragrafi di 2-4 frasi; isola in una riga sola la frase di svolta ("Il che non significa che vada tutto bene, sia chiaro.") e la prima domanda finale.
+- Precisione prima della brevità: specifica l'oggetto ("«nessun controllo» in merito alle procedure antiriciclaggio") anche se la frase si allunga. Connettivi parlati: "subito", "dunque", "sia chiaro".
 - Sottotitoli H3 in tondo (non MAIUSCOLO), precisi nel soggetto ("La mafia c'è, ma non come molti giornali l'hanno raccontata"); 0-3 per pezzo, nessuno nelle notizie brevi. Niente H1 nel corpo.
 - Prove nel corpo: screenshot, documenti, video, citazioni con numero di pagina.
-- Chiusura: domande al soggetto (11/36; "Le domande, a questo punto, sorgono spontanee"), battuta lapidaria ("Le attenuanti sono state considerate ed applicate, il resto è speculazione."), richiesta di chiarimento o impegno a seguire la vicenda.
+- Chiusura: mai uno slogan dopo le domande finali. Domande al soggetto (11/36; "Le domande, a questo punto, sorgono spontanee"), battuta lapidaria ("Le attenuanti sono state considerate ed applicate, il resto è speculazione."), richiesta di chiarimento o impegno a seguire la vicenda.
 - 650-1300 parole. Elenchi puntati rari.
 
 ## Fonti e cautele legali
@@ -44,12 +45,12 @@ Base: 36 articoli firmati 2021-2026 (impaginazione: 27 del 2023-2026). "N/36" = 
 - Inglesismi gergali in chiave ironica ("wannabe", "crisis management", "get rich quick").
 
 ## Formule da AI vietate
-- "Sembra una sfumatura. Non lo è.", "Non è un dettaglio", "Il punto è", "Il nodo è", "Ecco il cuore della vicenda", "Ricapitolando:", "Peccato che non sia vero." (0/36 nei pezzi dell'autore).
+- "Sembra una sfumatura. Non lo è.", "Non è un dettaglio", "Il punto è", "Peccato che non sia vero." (0/36 nei pezzi dell'autore). Ammessi dall'autore: "Il nodo è", "Ecco il cuore della vicenda, dunque", "Ricapitolando".
 - Schema "non X, ma Y" usato come slogan; riassunti a tre elementi ("Tre distinzioni…"); frasi-slogan corte in serie ("Titolo asciutto. In compenso è corretto.").
 - Etichette ironiche di chiusura paragrafo: "niente male", "complimenti", "un capolavoro di…", "roba da manuale". Metafore da rovesciare per capirle. Se la battuta va spiegata, si taglia.
 
 ## Controllo prima di consegnare
-Cerca nel testo: ", e " / ", ed "; « » e "; «” e ”»; le formule vietate; "ed"/"ad" + consonante; affermazioni non attribuite; refusi nel titolo.
+Vale anche per riassunto (excerpt), titolo SEO e meta description. Cerca: ", e " / ", ed "; « » e "; «” e ”»; le formule vietate; "ed"/"ad" + consonante; affermazioni non attribuite; refusi nel titolo.
 
 ## Esempi (testuali)
 - [Oderzo] "Un manuale da piccolo complottista, insomma, che in effetti tanto piace e quindi tanto vende se rivolto al giusto target."
