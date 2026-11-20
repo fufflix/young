@@ -137,6 +137,8 @@ class Young_SEO_Admin {
 								<a href="<?php echo esc_url( Young_SEO_News::url() ); ?>" target="_blank">Apri</a>
 							<?php endif; ?>
 							<p><label>Nome della testata <input type="text" name="<?php echo esc_attr( $opt ); ?>[news_name]" value="<?php echo esc_attr( Young_SEO::get( 'news_name' ) ); ?>" class="regular-text"></label></p>
+							<p><label>Escludi categorie o tag (slug) <input type="text" name="<?php echo esc_attr( $opt ); ?>[news_exclude]" value="<?php echo esc_attr( Young_SEO::get( 'news_exclude' ) ); ?>" class="regular-text"></label></p>
+							<p class="description">Gli articoli con una di queste categorie o tag (per esempio i contenuti sponsorizzati) non entrano nella sitemap News.</p>
 							<p class="description">Esclusi gli articoli con "noindex" in Yoast. Con Yoast attivo la sitemap viene aggiunta al suo indice (sitemap_index.xml); senza Yoast viene indicata in robots.txt.</p>
 						</td>
 					</tr>

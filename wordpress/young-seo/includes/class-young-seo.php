@@ -31,6 +31,7 @@ class Young_SEO {
 			'news_sitemap'    => true,
 			'news_name'       => 'YOUng',
 			'theme_meta_fix'  => true,
+			'news_exclude'    => 'sponsorizzato, pubbliredazionale, partner',
 		);
 	}
 
@@ -60,6 +61,7 @@ class Young_SEO {
 		$out['old_hosts']   = implode( ', ', self::parse_hosts( $input['old_hosts'] ?? '' ) );
 		$out['llms_policy'] = sanitize_textarea_field( $input['llms_policy'] ?? '' );
 		$out['news_name']   = sanitize_text_field( $input['news_name'] ?? '' );
+		$out['news_exclude'] = implode( ', ', array_filter( array_map( 'sanitize_title', preg_split( '/[\s,]+/', (string) ( $input['news_exclude'] ?? '' ) ) ) ) );
 		delete_transient( 'young_seo_llms' );
 		delete_transient( 'young_seo_news' );
 		return $out;
