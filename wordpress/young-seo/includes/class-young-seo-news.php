@@ -71,6 +71,18 @@ class Young_SEO_News {
 				),
 			)
 		);
+		// Sponsored content stays out of Google News: drop posts carrying an excluded category or tag.
+		$excluded = array_filter( array_map( 'sanitize_title', preg_split( '/[\s,]+/', (string) Young_SEO::get( 'news_exclude' ) ) ) );
+		if ( $excluded ) {
+			$posts = array_values(
+				array_filter(
+					$posts,
+					static function ( $post ) use ( $excluded ) {
+						return ! has_term( $excluded, 'category', $post ) && ! has_term( $excluded, 'post_tag', $post );
+					}
+				)
+			);
+		}
 		return $posts;
 	}
 
