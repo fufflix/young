@@ -486,54 +486,182 @@ function esc(s) {
   return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
 
-function htmlPage(body, script) {
+function htmlPage(titolo, body, script) {
   const nonce = btoa(String.fromCharCode(...crypto.getRandomValues(new Uint8Array(16))));
   const csp = "default-src 'none'; style-src 'unsafe-inline'; img-src https: data:; connect-src 'self'; " +
     "script-src 'nonce-" + nonce + "'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'";
   const page = '<!doctype html><html lang="it"><head><meta charset="utf-8">' +
     '<meta name="viewport" content="width=device-width,initial-scale=1">' +
     '<meta name="robots" content="noindex,nofollow,noarchive">' +
-    '<title>Anteprime newsletter</title><style>' + CSS + '</style></head><body>' + body +
+    '<meta name="color-scheme" content="light dark">' +
+    '<title>' + esc(titolo) + '</title><style>' + CSS + '</style></head><body>' + body +
     (script ? '<script nonce="' + nonce + '">' + script + '</script>' : '') + '</body></html>';
   return new Response(page, {
     headers: { 'Content-Type': 'text/html; charset=utf-8', 'Content-Security-Policy': csp },
   });
 }
 
-const CSS = `
-:root{--bg:#fafaf8;--fg:#1c1c1a;--mut:#6b6b66;--line:#ddddd6;--card:#fff;--acc:#0b57d0;--ok:#1a7f37;--bad:#b3261e}
-@media (prefers-color-scheme:dark){:root{--bg:#161614;--fg:#ececE6;--mut:#a3a39b;--line:#34342f;--card:#1f1f1c;--acc:#7ab0ff;--ok:#56d364;--bad:#ff8a80}}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.55 system-ui,sans-serif}
-main{max-width:820px;margin:0 auto;padding:24px 16px 80px}h1{font-size:1.4rem;margin:0 0 4px}
-.mut{color:var(--mut);font-size:.9rem}a{color:var(--acc)}
-table{width:100%;border-collapse:collapse;margin:16px 0}td,th{text-align:left;padding:10px 6px;border-bottom:1px solid var(--line)}
-button{font:inherit;padding:9px 14px;border-radius:8px;border:1px solid var(--line);background:var(--card);color:var(--fg);cursor:pointer}
-button.pri{background:var(--acc);color:#fff;border-color:var(--acc)}button.bad{color:var(--bad)}
-button:disabled{opacity:.5;cursor:default}
-input,textarea{width:100%;font:inherit;padding:10px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--fg)}
-label{display:block;font-size:.85rem;color:var(--mut);margin:14px 0 4px}
-#ed{min-height:380px;padding:14px;border:1px solid var(--line);border-radius:8px;background:var(--card)}
-#ed:focus{outline:2px solid var(--acc)}#ed img{max-width:100%}
-.bar{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0}.row{display:flex;flex-wrap:wrap;gap:8px;margin:18px 0}
-.badge{display:inline-block;padding:2px 8px;border-radius:99px;font-size:.78rem;border:1px solid var(--line)}
-.src li{margin:4px 0}#msg{min-height:1.5em;margin-top:8px}#msg.ok{color:var(--ok)}#msg.err{color:var(--bad)}
-pre{white-space:pre-wrap;background:var(--card);padding:10px;border:1px solid var(--line);border-radius:8px}
+const CSS = String.raw`
+:root{
+ --bg:#f4f3ee;--panel:#ffffff;--ink:#1c1b18;--mut:#6a675f;--line:#dedbd1;--line2:#ebe8df;
+ --acc:#1f4fd8;--acc-ink:#ffffff;--acc-soft:#e8eefc;--ok:#1a7f37;--ok-soft:#e3f4e8;
+ --warn:#8a5200;--warn-soft:#fff1d6;--bad:#b3261e;--bad-soft:#fde7e5;
+ --sh:0 1px 2px rgba(20,18,10,.06),0 8px 24px rgba(20,18,10,.06);
+ --serif:Georgia,'Iowan Old Style','Palatino Linotype',serif;
+ --sans:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+}
+@media (prefers-color-scheme:dark){:root{
+ --bg:#141413;--panel:#1d1d1b;--ink:#ecebe5;--mut:#a09d94;--line:#34332e;--line2:#2a2925;
+ --acc:#7aa2ff;--acc-ink:#0d1220;--acc-soft:#1b2540;--ok:#5fd37e;--ok-soft:#16301f;
+ --warn:#f2b44d;--warn-soft:#3a2c10;--bad:#ff8a80;--bad-soft:#3a1816;
+ --sh:0 1px 2px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.35)}}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 var(--sans)}
+a{color:var(--acc)}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+.mut{color:var(--mut)}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:9px;border:1px solid var(--line);background:var(--panel);cursor:pointer;font-weight:550;white-space:nowrap}
+.btn:hover{border-color:var(--mut)}
+.btn.pri{background:var(--acc);border-color:var(--acc);color:var(--acc-ink)}
+.btn.dan{color:var(--bad);border-color:var(--bad)}
+.btn.dan.pieno{background:var(--bad);color:#fff}
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:2px 10px;border-radius:99px;font-size:.78rem;border:1px solid var(--line);background:var(--panel);white-space:nowrap}
+.chip.ok{background:var(--ok-soft);color:var(--ok);border-color:transparent}
+.chip.warn{background:var(--warn-soft);color:var(--warn);border-color:transparent}
+.chip.bad{background:var(--bad-soft);color:var(--bad);border-color:transparent}
+/* elenco */
+.wrap{max-width:880px;margin:0 auto;padding:36px 16px 80px}
+.wrap h1{font:700 1.7rem/1.2 var(--serif);margin:0 0 4px}
+.lista{display:grid;gap:12px;margin:26px 0}
+.voce{display:block;text-decoration:none;color:inherit;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px 20px;box-shadow:var(--sh)}
+.voce:hover{border-color:var(--acc)}
+.voce h2{font:700 1.2rem/1.3 var(--serif);margin:0 0 6px}
+.voce .riga{display:flex;flex-wrap:wrap;gap:8px;align-items:center;color:var(--mut);font-size:.85rem}
+.vuoto{padding:34px;text-align:center;border:1px dashed var(--line);border-radius:14px;color:var(--mut)}
+.pannello{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px 20px}
+.pannello h3{margin:0 0 8px;font-size:1rem}
+.ghost-ris{margin-top:12px;display:grid;gap:6px;font-size:.92rem}
+/* editor */
+.top{position:sticky;top:0;z-index:30;display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;padding:10px 16px;background:var(--panel);border-bottom:1px solid var(--line)}
+.top .sx{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;min-width:0}
+.top .dx{display:flex;gap:8px;flex-wrap:wrap}
+.stato{font-size:.85rem;color:var(--mut)}
+.stato.ok{color:var(--ok)}.stato.warn{color:var(--warn)}.stato.err{color:var(--bad)}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:9px;overflow:hidden}
+.seg button{border:0;background:transparent;padding:8px 12px;cursor:pointer;font-weight:550}
+.seg button.on{background:var(--acc-soft);color:var(--acc)}
+.layout{display:grid;grid-template-columns:minmax(0,1fr) 330px;gap:24px;max-width:1180px;margin:0 auto;padding:22px 16px 90px}
+@media (max-width:960px){.layout{grid-template-columns:minmax(0,1fr)}}
+.campo label{display:block;font-size:.8rem;font-weight:650;color:var(--mut);text-transform:uppercase;letter-spacing:.04em;margin:0 0 6px}
+#titolo{width:100%;resize:none;overflow:hidden;font:700 1.9rem/1.25 var(--serif);padding:10px 12px;border:1px solid transparent;border-radius:10px;background:transparent}
+#titolo:hover,#titolo:focus{border-color:var(--line);background:var(--panel)}
+.conta{font-size:.8rem;color:var(--mut);margin:4px 2px 14px;display:flex;gap:14px;flex-wrap:wrap}
+.conta .alert{color:var(--warn);font-weight:600}
+.tb{position:sticky;top:calc(var(--alto,62px) + 8px);z-index:20;display:flex;flex-wrap:wrap;gap:4px;align-items:center;padding:8px;background:var(--panel);border:1px solid var(--line);border-radius:12px;box-shadow:var(--sh)}
+.tb button,.tb select{height:34px;padding:0 10px;border:1px solid transparent;border-radius:8px;background:transparent;cursor:pointer}
+.tb button:hover,.tb select:hover{background:var(--acc-soft)}
+.tb button.on{background:var(--acc-soft);color:var(--acc);border-color:var(--acc)}
+.tb .sep{width:1px;height:22px;background:var(--line);margin:0 4px}
+.foglio{margin-top:14px;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:34px 40px;box-shadow:var(--sh)}
+@media (max-width:640px){.foglio{padding:20px 16px}}
+#ed{min-height:420px;outline:0;font:19px/1.75 var(--serif);max-width:680px;margin:0 auto}
+#ed p{margin:0 0 1.1em}
+#ed h2{font:700 1.5rem/1.3 var(--serif);margin:1.5em 0 .5em}
+#ed h3{font:700 1.2rem/1.35 var(--serif);margin:1.4em 0 .4em}
+#ed blockquote{margin:1.2em 0;padding:.2em 1.1em;border-left:4px solid var(--acc);color:var(--mut)}
+#ed ul,#ed ol{margin:0 0 1.1em;padding-left:1.4em}
+#ed hr{border:0;border-top:1px solid var(--line);margin:1.8em 0}
+#ed img{max-width:100%;height:auto;border-radius:8px}
+#ed a{color:var(--acc)}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px 18px;margin-bottom:16px}
+.card h3{margin:0 0 10px;font-size:.8rem;text-transform:uppercase;letter-spacing:.05em;color:var(--mut)}
+#riassunto{width:100%;min-height:84px;resize:vertical;padding:10px;border:1px solid var(--line);border-radius:10px;background:var(--bg)}
+.contr{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.contr li{display:flex;gap:10px;align-items:flex-start;font-size:.9rem}
+.punto{flex:none;width:10px;height:10px;border-radius:50%;margin-top:6px;background:var(--ok)}
+.punto.avviso{background:var(--warn)}.punto.blocca{background:var(--bad)}.punto.info{background:var(--mut)}
+.contr .fix{margin-left:6px;padding:1px 8px;border:1px solid var(--acc);border-radius:99px;background:transparent;color:var(--acc);cursor:pointer;font-size:.78rem}
+.stat{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.stat div{background:var(--bg);border-radius:10px;padding:10px}
+.stat b{display:block;font-size:1.3rem}
+.stat span{font-size:.78rem;color:var(--mut)}
+.fonti{margin:0;padding-left:18px;font-size:.9rem}.fonti li{margin:6px 0}
+/* anteprima email */
+.dispositivi{display:flex;justify-content:center;margin:10px 0 16px}
+.sfondo-mail{background:var(--line2);border-radius:14px;padding:26px 12px;display:flex;justify-content:center}
+.mail{background:#fff;color:#15171a;width:100%;max-width:640px;border-radius:10px;overflow:hidden;box-shadow:var(--sh)}
+.mail.telefono{max-width:390px;border-radius:26px;border:8px solid #1c1c1c}
+.mail .tes{padding:14px 22px;border-bottom:1px solid #e5e5e0;font:600 .85rem var(--sans);color:#555}
+.mail .og{padding:20px 22px 4px;font:700 1.35rem/1.3 var(--serif)}
+.mail .pre{padding:0 22px 12px;color:#777;font-size:.82rem}
+.mail .co{padding:6px 22px 28px;font:17px/1.7 var(--serif)}
+.mail .co p{margin:0 0 1em}.mail .co h2{font:700 1.3rem/1.3 var(--serif);margin:1.3em 0 .4em}
+.mail .co h3{font:700 1.1rem/1.3 var(--serif);margin:1.2em 0 .4em}
+.mail .co blockquote{margin:1em 0;padding:.1em 1em;border-left:4px solid #1f4fd8;color:#555}
+.mail .co a{color:#1f4fd8}.mail .co img{max-width:100%}
+/* finestre */
+dialog{border:1px solid var(--line);border-radius:16px;background:var(--panel);color:var(--ink);padding:0;width:min(520px,92vw);box-shadow:var(--sh)}
+dialog::backdrop{background:rgba(10,10,8,.55)}
+dialog form,dialog .dl{padding:22px}
+dialog h2{margin:0 0 10px;font:700 1.25rem/1.3 var(--serif)}
+dialog input[type=text],dialog input[type=url]{width:100%;padding:10px;border:1px solid var(--line);border-radius:9px;background:var(--bg);margin:4px 0 12px}
+dialog .az{display:flex;gap:8px;justify-content:flex-end;margin-top:14px;flex-wrap:wrap}
+.lista-inv{list-style:none;margin:10px 0;padding:0;display:grid;gap:8px}
+.lista-inv li{display:flex;gap:10px;align-items:flex-start}
+.toast{position:fixed;left:50%;bottom:22px;transform:translate(-50%,20px);opacity:0;pointer-events:none;background:var(--ink);color:var(--bg);padding:11px 18px;border-radius:10px;max-width:92vw;transition:.2s;z-index:60}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+.toast.err{background:var(--bad);color:#fff}.toast.ok{background:var(--ok);color:#fff}
+#ed>:first-child{margin-top:0}
+@media (max-width:640px){
+ .top{position:static;padding:10px 12px}
+ .top .dx{width:100%}
+ .top .dx .btn{flex:1 1 auto;justify-content:center}
+ .tb{top:0;flex-wrap:nowrap;overflow-x:auto;border-radius:0;margin:0 -16px;border-left:0;border-right:0}
+ .tb button,.tb select{flex:none}
+ #titolo{font-size:1.5rem}
+ #ed{font-size:18px}
+}
+[hidden]{display:none!important}
 `;
+
+function parole(html) {
+  const t = String(html || '').replace(/<[^>]*>/g, ' ').replace(/&nbsp;/g, ' ').trim();
+  return t ? t.split(/\s+/).length : 0;
+}
 
 async function listPage(env) {
   const drafts = await listDrafts(env);
   const rows = drafts.length
-    ? drafts.map((d) =>
-        '<tr><td><a href="' + BASE + '/d/' + esc(d.id) + '">' + esc(d.title) + '</a></td><td class="mut">' +
-        esc((d.updated || '').slice(0, 16).replace('T', ' ')) + ' UTC</td><td><span class="badge">' +
-        esc(d.testedHash ? 'testata' : 'da testare') + '</span></td></tr>').join('')
-    : '<tr><td colspan="3" class="mut">Nessuna bozza in attesa.</td></tr>';
+    ? drafts.map((d) => {
+        const tested = !!d.testedHash;
+        return '<a class="voce" href="' + BASE + '/d/' + esc(d.id) + '"><h2>' + esc(d.title) + '</h2><div class="riga">' +
+          '<span class="chip ' + (tested ? 'ok' : 'warn') + '">' + (tested ? 'Prova inviata' : 'Prova da inviare') + '</span>' +
+          '<span>' + parole(d.html) + ' parole</span><span>Aggiornata il ' +
+          esc(new Date(d.updated || Date.now()).toLocaleString('it-IT', { timeZone: 'Europe/Rome', day: '2-digit', month: 'long', hour: '2-digit', minute: '2-digit' })) +
+          '</span></div></a>';
+      }).join('')
+    : '<div class="vuoto">Nessuna bozza in attesa. Quando ne preparo una, la trovi qui.</div>';
   return htmlPage(
-    '<main><h1>Anteprime newsletter</h1><div class="mut">Pagina privata: non indicizzata, accesso con login.</div>' +
-    '<table><tr><th>Titolo</th><th>Aggiornata</th><th>Stato</th></tr>' + rows + '</table>' +
-    '<button id="chk">Controlla collegamento con Ghost</button><pre id="out" hidden></pre></main>',
-    `document.getElementById('chk').onclick=function(){var o=document.getElementById('out');o.hidden=false;o.textContent='Controllo...';
-fetch('/anteprime/api/ghost-check').then(function(r){return r.json()}).then(function(j){o.textContent=JSON.stringify(j,null,2)}).catch(function(e){o.textContent=String(e)})}`
+    'Anteprime newsletter',
+    '<div class="wrap"><h1>Anteprime newsletter</h1><div class="mut">Pagina privata: non indicizzata, protetta da accesso. Le bozze si cancellano dopo l’invio.</div>' +
+    '<div class="lista">' + rows + '</div>' +
+    '<div class="pannello"><h3>Collegamento con Ghost</h3><div class="mut">Controlla se Ghost risponde e quale newsletter viene usata per gli invii.</div>' +
+    '<p><button class="btn" id="chk">Controlla ora</button></p><div class="ghost-ris" id="out"></div></div></div>',
+    String.raw`
+document.getElementById('chk').onclick=function(){
+ var o=document.getElementById('out');o.textContent='Controllo in corso…';
+ fetch('/anteprime/api/ghost-check').then(function(r){return r.json().then(function(j){return {ok:r.ok,j:j}})}).then(function(r){
+  o.textContent='';
+  function riga(t,c){var d=document.createElement('div');if(c){var s=document.createElement('span');s.className='chip '+c;s.textContent=t;d.appendChild(s)}else d.textContent=t;o.appendChild(d)}
+  if(!r.ok){riga(r.j.error||'Errore','bad');return}
+  riga('Ghost risponde','ok');
+  r.j.newsletters.forEach(function(n){riga(n.name+(n.usata_per_gli_invii?' — usata per gli invii':'')+' ('+n.status+')',n.usata_per_gli_invii?'ok':'')});
+  riga(r.j.test_email_configurata?'Email di prova configurata':'Email di prova non configurata',r.j.test_email_configurata?'ok':'warn');
+  riga(r.j.invio_a_tutti_attivo?'Invio a tutti attivo':'Invio a tutti spento (si attiva dopo la prova)',r.j.invio_a_tutti_attivo?'warn':'ok');
+ }).catch(function(e){o.textContent=String(e)})};`
   );
 }
 
@@ -541,66 +669,289 @@ async function editorPage(env, id) {
   const d = await getDraft(env, id);
   if (!d) throw new HttpError(404, 'Bozza non trovata');
   const tested = !!d.testedHash && d.testedHash === (await hashDraft(d));
-  const data = JSON.stringify({ id: d.id, html: d.html, tested }).replace(/</g, '\\u003c');
-  const src = (d.sources || []).length
-    ? '<h2 style="font-size:1rem">Fonti usate</h2><ul class="src">' + d.sources.map((s) =>
-        '<li>' + (s.url ? '<a href="' + esc(s.url) + '" target="_blank" rel="noopener noreferrer">' + esc(s.title || s.url) + '</a>' : esc(s.title)) +
-        (s.note ? ' <span class="mut">— ' + esc(s.note) + '</span>' : '') + '</li>').join('') + '</ul>'
-    : '<p class="mut">Nessuna fonte allegata: non inviare.</p>';
-  const body =
-    '<main><a href="' + BASE + '">← Tutte le anteprime</a><h1>Bozza newsletter</h1>' +
-    '<div class="mut">Destinatari all\'invio: iscritti alla newsletter «' + esc(env.NEWSLETTER_NAME || 'Fuflix la newsletter') + '».</div>' +
-    '<label for="title">Titolo (è anche l\'oggetto dell\'email)</label><input id="title" maxlength="200" value="' + esc(d.title) + '">' +
-    '<label for="summary">Riassunto breve (max 300 caratteri)</label><textarea id="summary" rows="2" maxlength="300">' + esc(d.summary) + '</textarea>' +
-    '<label>Testo</label><div class="bar">' +
-    '<button data-c="bold"><b>B</b></button><button data-c="italic"><i>I</i></button><button data-c="h2">Titoletto</button>' +
-    '<button data-c="ul">Elenco</button><button data-c="link">Link</button><button data-c="unlink">Togli link</button></div>' +
-    '<div id="ed" contenteditable="true"></div>' + src +
-    '<div class="row"><button id="save">Salva</button><button id="test" class="pri">Invia test a me</button>' +
-    '<button id="send" class="bad">Invia a tutti gli iscritti</button><button id="del" class="bad">Elimina bozza</button></div>' +
-    '<div id="msg"></div><script type="application/json" id="data">' + data + '</script></main>';
-  return htmlPage(body, CLIENT_JS);
+  const data = JSON.stringify({
+    id: d.id,
+    title: d.title,
+    summary: d.summary || '',
+    html: d.html,
+    tested,
+    sources: d.sources || [],
+    newsletter: String(env.NEWSLETTER_NAME || 'Fuflix la newsletter'),
+    provaPronta: !!env.EMAIL_PROVA,
+    invioAttivo: String(env.ALLOW_SEND || '') === 'yes',
+    ghostPronto: !!env.CHIAVE_GHOST,
+  }).replace(/</g, '\\u003c');
+  const body = `
+<header class="top">
+ <div class="sx"><a href="${BASE}">← Anteprime</a><span class="stato" id="stato" role="status">Tutto salvato</span>
+  <span class="chip" id="chip-ghost"></span><span class="chip" id="chip-prova"></span></div>
+ <div class="dx">
+  <div class="seg" role="group" aria-label="Vista"><button id="v-mod" class="on" type="button">Modifica</button><button id="v-ant" type="button">Anteprima email</button></div>
+  <button class="btn" id="b-salva" type="button">Salva</button>
+  <button class="btn pri" id="b-prova" type="button">Invia prova a me</button>
+  <button class="btn dan" id="b-invia" type="button">Invia a tutti…</button>
+ </div>
+</header>
+<div class="layout">
+ <main>
+  <section id="vista-mod">
+   <div class="campo"><label for="titolo">Titolo (è anche l’oggetto dell’email)</label>
+   <textarea id="titolo" rows="1" maxlength="200" spellcheck="true"></textarea></div>
+   <div class="conta"><span id="c-titolo"></span></div>
+   <div class="tb" id="tb" role="toolbar" aria-label="Formattazione">
+    <button type="button" data-c="annulla" title="Annulla (Ctrl+Z)">Annulla</button>
+    <button type="button" data-c="ripeti" title="Ripeti (Ctrl+Maiusc+Z)">Ripeti</button><span class="sep"></span>
+    <select id="blocco" aria-label="Stile del paragrafo"><option value="p">Paragrafo</option><option value="h2">Titoletto grande</option><option value="h3">Titoletto piccolo</option></select><span class="sep"></span>
+    <button type="button" data-c="grassetto" title="Grassetto (Ctrl+B)"><b>Grassetto</b></button>
+    <button type="button" data-c="corsivo" title="Corsivo (Ctrl+I)"><i>Corsivo</i></button><span class="sep"></span>
+    <button type="button" data-c="link" title="Inserisci link (Ctrl+K)">Link</button>
+    <button type="button" data-c="toglilink" title="Togli il link">Togli link</button><span class="sep"></span>
+    <button type="button" data-c="elenco" title="Elenco puntato">Elenco</button>
+    <button type="button" data-c="numerato" title="Elenco numerato">Numerato</button>
+    <button type="button" data-c="citazione" title="Citazione">Citazione</button>
+    <button type="button" data-c="linea" title="Linea di separazione">Linea</button>
+    <button type="button" data-c="immagine" title="Inserisci immagine da indirizzo">Immagine</button><span class="sep"></span>
+    <button type="button" data-c="pulisci" title="Togli la formattazione">Pulisci</button>
+   </div>
+   <div class="foglio"><article id="ed" contenteditable="true" spellcheck="true" aria-label="Testo della newsletter"></article></div>
+  </section>
+  <section id="vista-ant" hidden>
+   <div class="dispositivi"><div class="seg" role="group" aria-label="Dispositivo"><button id="d-tel" class="on" type="button">Telefono</button><button id="d-pc" type="button">Computer</button></div></div>
+   <div class="sfondo-mail"><div class="mail telefono" id="mail">
+    <div class="tes" id="m-newsletter"></div><div class="og" id="m-oggetto"></div><div class="pre" id="m-pre"></div><div class="co" id="m-corpo"></div></div></div>
+  </section>
+ </main>
+ <aside>
+  <div class="card"><h3>Riassunto breve</h3><textarea id="riassunto" maxlength="300" placeholder="Due righe che spiegano di cosa parla la newsletter."></textarea><div class="conta"><span id="c-riass"></span></div></div>
+  <div class="card"><h3>Controlli prima dell’invio</h3><ul class="contr" id="contr"></ul></div>
+  <div class="card"><h3>Il testo in numeri</h3><div class="stat"><div><b id="s-par">0</b><span>parole</span></div><div><b id="s-let">0</b><span>minuti di lettura</span></div></div></div>
+  <div class="card"><h3>Fonti controllate</h3><ol class="fonti" id="fonti"></ol><p class="mut" style="font-size:.8rem;margin:10px 0 0">Servono a te per verificare: non vengono inviate agli iscritti.</p></div>
+ </aside>
+</div>
+<dialog id="dl-link"><form method="dialog" class="dl"><h2>Inserisci un link</h2><label for="l-url" class="mut">Indirizzo (https://… oppure mailto:…)</label><input type="url" id="l-url" placeholder="https://"><div class="az"><button class="btn" value="annulla" id="l-no" type="button">Annulla</button><button class="btn pri" id="l-ok" type="button">Applica</button></div></form></dialog>
+<dialog id="dl-img"><form method="dialog" class="dl"><h2>Inserisci un’immagine</h2><label for="i-url" class="mut">Indirizzo dell’immagine (solo https://)</label><input type="url" id="i-url" placeholder="https://"><label for="i-alt" class="mut">Descrizione per chi non la vede</label><input type="text" id="i-alt"><div class="az"><button class="btn" id="i-no" type="button">Annulla</button><button class="btn pri" id="i-ok" type="button">Inserisci</button></div></form></dialog>
+<dialog id="dl-invio"><div class="dl"><h2>Invia a tutti gli iscritti</h2><div class="mut" id="inv-dest"></div><ul class="lista-inv" id="inv-lista"></ul>
+ <label for="inv-conf" class="mut">Per confermare scrivi INVIA (non si può annullare)</label><input type="text" id="inv-conf" autocomplete="off">
+ <div class="az"><button class="btn" id="inv-no" type="button">Annulla</button><button class="btn dan pieno" id="inv-ok" type="button" disabled>Invia ora</button></div></div></dialog>
+<dialog id="dl-del"><div class="dl"><h2>Eliminare la bozza?</h2><div class="mut">Sparisce da questa pagina. Su Ghost non viene toccato nulla.</div><div class="az"><button class="btn" id="del-no" type="button">Annulla</button><button class="btn dan pieno" id="del-ok" type="button">Elimina</button></div></div></dialog>
+<div style="max-width:1180px;margin:0 auto;padding:0 16px 40px"><button class="btn dan" id="b-elimina" type="button">Elimina bozza</button></div>
+<div class="toast" id="toast" role="status"></div>
+<script type="application/json" id="data">${data}</script>`;
+  return htmlPage('Bozza newsletter', body, CLIENT_JS);
 }
 
-const CLIENT_JS = `
+const CLIENT_JS = String.raw`
 (function(){
+'use strict';
 var data=JSON.parse(document.getElementById('data').textContent);
 var $=function(i){return document.getElementById(i)};
-var ed=$('ed'),title=$('title'),summary=$('summary'),msg=$('msg');
-var ALLOWED={P:1,H2:1,H3:1,UL:1,OL:1,LI:1,A:1,STRONG:1,EM:1,BLOCKQUOTE:1,BR:1,HR:1,IMG:1};
-var MAP={B:'STRONG',I:'EM',H1:'H2',H4:'H3',H5:'H3',H6:'H3',DIV:'P'};
-var VOID={BR:1,HR:1,IMG:1};
-function walk(src,dst){src.childNodes.forEach(function(n){
+var ed=$('ed'),titolo=$('titolo'),riass=$('riassunto');
+var sporco=false,salvando=false,timer=null,provato=!!data.tested,sel=null,ultimoSalvataggio='';
+try{document.execCommand('defaultParagraphSeparator',false,'p')}catch(e){}
+
+/* ---------- pulizia del testo (stessa lista del server) ---------- */
+var CONSENTITI={P:1,H2:1,H3:1,UL:1,OL:1,LI:1,A:1,STRONG:1,EM:1,BLOCKQUOTE:1,BR:1,HR:1,IMG:1};
+var MAPPA={B:'STRONG',I:'EM',H1:'H2',H4:'H3',H5:'H3',H6:'H3',DIV:'P'};
+var VUOTI={BR:1,HR:1,IMG:1};
+function cammina(src,dst){src.childNodes.forEach(function(n){
  if(n.nodeType===3){dst.appendChild(document.createTextNode(n.nodeValue));return}
  if(n.nodeType!==1)return;
  if(n.tagName==='SCRIPT'||n.tagName==='STYLE'||n.tagName==='IFRAME')return;
- var tag=MAP[n.tagName]||n.tagName;
- if(!ALLOWED[tag]){walk(n,dst);return}
+ var tag=MAPPA[n.tagName]||n.tagName;
+ if(!CONSENTITI[tag]){cammina(n,dst);return}
  var el=document.createElement(tag);
  if(tag==='A'){var h=n.getAttribute('href')||'';if(/^(https:|mailto:)/i.test(h))el.setAttribute('href',h)}
  if(tag==='IMG'){var s=n.getAttribute('src')||'';if(!/^https:/i.test(s))return;el.setAttribute('src',s);el.setAttribute('alt',n.getAttribute('alt')||'')}
- if(!VOID[tag])walk(n,el);
+ if(!VUOTI[tag])cammina(n,el);
  dst.appendChild(el)})}
-function clean(html){var doc=new DOMParser().parseFromString('<body>'+html+'</body>','text/html');var out=document.createElement('div');walk(doc.body,out);return out.innerHTML}
-ed.innerHTML=clean(data.html);
-function say(t,c){msg.textContent=t;msg.className=c||''}
-function call(name,extra){var b={title:title.value,summary:summary.value,html:clean(ed.innerHTML)};
- if(extra)for(var k in extra)b[k]=extra[k];
- return fetch('/anteprime/api/'+name+'/'+data.id,{method:'POST',headers:{'Content-Type':'application/json','X-Requested-With':'anteprime'},body:JSON.stringify(b)})
+function pulisci(html){var doc=new DOMParser().parseFromString('<body>'+html+'</body>','text/html');var out=document.createElement('div');cammina(doc.body,out);return out.innerHTML}
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
+
+/* ---------- messaggi e stato ---------- */
+function stato(t,c){var e=$('stato');e.textContent=t;e.className='stato '+(c||'')}
+function ora(){return new Date().toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'})}
+function avviso(t,tipo){var e=$('toast');e.textContent=t;e.className='toast show '+(tipo||'');clearTimeout(avviso.t);avviso.t=setTimeout(function(){e.className='toast'},tipo==='err'?8000:3200)}
+
+/* ---------- chiamate al server ---------- */
+function carico(){return {title:titolo.value,summary:riass.value,html:pulisci(ed.innerHTML)}}
+function chiama(nome,extra){var b=carico();if(extra)for(var k in extra)b[k]=extra[k];
+ return fetch('/anteprime/api/'+nome+'/'+data.id,{method:'POST',headers:{'Content-Type':'application/json','X-Requested-With':'anteprime'},body:JSON.stringify(b)})
  .then(function(r){return r.json().then(function(j){return {ok:r.ok,j:j}})})}
-function run(name,extra,okfn){say('Un attimo...');call(name,extra).then(function(r){
- if(r.ok){okfn(r.j)}else{say(r.j.error||'Errore','err')}}).catch(function(e){say(String(e),'err')})}
-document.querySelectorAll('.bar button').forEach(function(b){b.onclick=function(){
- ed.focus();var c=b.getAttribute('data-c');
- if(c==='h2')document.execCommand('formatBlock',false,'H2');
- else if(c==='ul')document.execCommand('insertUnorderedList');
- else if(c==='link'){var u=prompt('Indirizzo del link (https://...)');if(u)document.execCommand('createLink',false,u)}
- else document.execCommand(c)}});
-$('save').onclick=function(){run('save',null,function(j){say(j.tested?'Salvata (test ancora valido).':'Salvata. Ricorda di inviare un test.','ok')})};
-$('test').onclick=function(){run('test',null,function(j){say(j.message,'ok')})};
-$('send').onclick=function(){var v=prompt('Stai per spedire la newsletter a TUTTI gli iscritti. Non si può annullare. Scrivi INVIA per confermare.');
- if(v!=='INVIA'){say('Invio annullato.');return}
- run('send',{confirm:v},function(j){say(j.message,'ok');setTimeout(function(){location.href='/anteprime'},2500)})};
-$('del').onclick=function(){if(!confirm('Eliminare questa bozza?'))return;run('delete',null,function(){location.href='/anteprime'})};
+function salva(manuale){
+ if(salvando)return Promise.resolve();
+ salvando=true;stato('Salvataggio…','');
+ return chiama('save').then(function(r){salvando=false;
+  if(r.ok){sporco=false;provato=!!r.j.tested;stato('Salvato alle '+ora(),'ok');aggiorna();if(manuale)avviso('Bozza salvata','ok')}
+  else{stato('Errore nel salvataggio','err');avviso(r.j.error||'Errore','err')}
+ }).catch(function(e){salvando=false;stato('Nessuna connessione','err');avviso('Non riesco a salvare: '+e,'err')})}
+function cambiato(){sporco=true;provato=false;stato('Modifiche non salvate','warn');clearTimeout(timer);timer=setTimeout(function(){salva(false)},4000);aggiorna()}
+window.addEventListener('beforeunload',function(e){if(sporco){e.preventDefault();e.returnValue=''}});
+
+/* ---------- barra degli strumenti ---------- */
+function salvaSel(){var s=getSelection();if(s.rangeCount&&ed.contains(s.anchorNode))sel=s.getRangeAt(0).cloneRange()}
+function ripristinaSel(){ed.focus();if(!sel)return;var s=getSelection();s.removeAllRanges();s.addRange(sel)}
+function blocco(){try{return String(document.queryCommandValue('formatBlock')).toLowerCase().replace(/[<>]/g,'')}catch(e){return 'p'}}
+function stati(){
+ try{
+  document.querySelectorAll('#tb button[data-c]').forEach(function(b){
+   var c=b.getAttribute('data-c'),on=false;
+   if(c==='grassetto')on=document.queryCommandState('bold');
+   if(c==='corsivo')on=document.queryCommandState('italic');
+   if(c==='elenco')on=document.queryCommandState('insertUnorderedList');
+   if(c==='numerato')on=document.queryCommandState('insertOrderedList');
+   if(c==='citazione')on=blocco()==='blockquote';
+   b.classList.toggle('on',on)});
+  var b=blocco();$('blocco').value=(b==='h2'||b==='h3')?b:'p';
+ }catch(e){}}
+document.addEventListener('selectionchange',function(){salvaSel();if(ed.contains(getSelection().anchorNode))stati()});
+ed.addEventListener('mouseup',salvaSel);ed.addEventListener('keyup',salvaSel);
+$('blocco').addEventListener('mousedown',salvaSel);$('blocco').addEventListener('focus',salvaSel);
+function altezza(){var t=document.querySelector('.top');document.documentElement.style.setProperty('--alto',(getComputedStyle(t).position==='sticky'?t.offsetHeight:0)+'px')}
+window.addEventListener('resize',altezza);altezza();
+$('tb').addEventListener('mousedown',function(e){if(e.target.tagName!=='SELECT')e.preventDefault()});
+function comando(c){
+ ripristinaSel();
+ if(c==='annulla')document.execCommand('undo');
+ else if(c==='ripeti')document.execCommand('redo');
+ else if(c==='grassetto')document.execCommand('bold');
+ else if(c==='corsivo')document.execCommand('italic');
+ else if(c==='elenco')document.execCommand('insertUnorderedList');
+ else if(c==='numerato')document.execCommand('insertOrderedList');
+ else if(c==='citazione')document.execCommand('formatBlock',false,blocco()==='blockquote'?'P':'BLOCKQUOTE');
+ else if(c==='linea')document.execCommand('insertHorizontalRule');
+ else if(c==='toglilink')document.execCommand('unlink');
+ else if(c==='pulisci'){document.execCommand('removeFormat');document.execCommand('unlink');document.execCommand('formatBlock',false,'P')}
+ else if(c==='link')apriLink();
+ else if(c==='immagine')apriImmagine();
+ cambiato();stati()}
+document.querySelectorAll('#tb button[data-c]').forEach(function(b){b.addEventListener('click',function(){comando(b.getAttribute('data-c'))})});
+$('blocco').addEventListener('change',function(){ripristinaSel();document.execCommand('formatBlock',false,$('blocco').value.toUpperCase());cambiato();stati()});
+ed.addEventListener('input',cambiato);
+ed.addEventListener('paste',function(e){
+ e.preventDefault();var cd=e.clipboardData,h=cd.getData('text/html'),t=cd.getData('text/plain');
+ var html=h?pulisci(h):('<p>'+esc(t).split(/\n{2,}/).join('</p><p>').split(/\n/).join('<br>')+'</p>');
+ document.execCommand('insertHTML',false,html);cambiato()});
+document.addEventListener('keydown',function(e){
+ var k=(e.ctrlKey||e.metaKey)&&!e.shiftKey?e.key.toLowerCase():'';
+ if(k==='s'){e.preventDefault();salva(true)}
+ else if(k==='k'&&ed.contains(getSelection().anchorNode)){e.preventDefault();salvaSel();apriLink()}});
+
+/* ---------- finestre: link e immagine ---------- */
+function apriLink(){
+ var a=null,n=getSelection().anchorNode;while(n&&n!==ed){if(n.nodeType===1&&n.tagName==='A'){a=n;break}n=n.parentNode}
+ $('l-url').value=a?a.getAttribute('href'):'';$('dl-link').showModal();$('l-url').focus()}
+$('l-no').onclick=function(){$('dl-link').close()};
+$('l-ok').onclick=function(){var u=$('l-url').value.trim();
+ if(!/^(https:\/\/|mailto:)/i.test(u)){avviso('Il link deve iniziare con https:// oppure mailto:','err');return}
+ $('dl-link').close();ripristinaSel();document.execCommand('createLink',false,u);cambiato()};
+function apriImmagine(){$('i-url').value='';$('i-alt').value='';$('dl-img').showModal();$('i-url').focus()}
+$('i-no').onclick=function(){$('dl-img').close()};
+$('i-ok').onclick=function(){var u=$('i-url').value.trim();
+ if(!/^https:\/\//i.test(u)){avviso('L’indirizzo deve iniziare con https://','err');return}
+ $('dl-img').close();ripristinaSel();document.execCommand('insertHTML',false,'<img src="'+esc(u)+'" alt="'+esc($('i-alt').value)+'">');cambiato()};
+
+/* ---------- correzioni automatiche nello stile dell'autore ---------- */
+function perNodi(fn){var w=document.createTreeWalker(ed,NodeFilter.SHOW_TEXT,null),n,l=[],tot=0;while(n=w.nextNode())l.push(n);
+ l.forEach(function(x){var v=fn(x.nodeValue,x);if(v!==x.nodeValue){x.nodeValue=v;tot++}});return tot}
+function sistemaVirgolette(){var prev='';
+ return perNodi(function(v,nodo){if(!nodo.previousSibling)prev='';var out='';
+  for(var i=0;i<v.length;i++){var c=v.charAt(i);
+   if(c==='"'||c==='«'||c==='»'){out+=(c==='«'||(c==='"'&&(prev===''||/[\s(\[—]/.test(prev))))?'“':'”'}
+   else if(c==="'"){out+='’'}
+   else out+=c;
+   prev=out.charAt(out.length-1)}
+  return out})}
+function togliVirgolaPrimaDiE(){return perNodi(function(v){return v.replace(/,(\s+)(ed|e)(?=\s)/g,'$1$2')})}
+function sistemaEd(){return perNodi(function(v){return v.replace(/\b(ed|ad)(\s+)(?=[bcdfgjklmnpqrstvwxyz])/gi,function(m,a,sp){return a.charAt(0)+sp})})}
+var CORREZIONI={virgolette:sistemaVirgolette,virgola:togliVirgolaPrimaDiE,ed:sistemaEd};
+
+/* ---------- controlli ---------- */
+var VIETATE=/(il punto è|non è un dettaglio|sembra una sfumatura|peccato che non sia vero|niente male|complimenti|un capolavoro di|roba da manuale)/gi;
+function testo(){return (ed.innerText||ed.textContent||'').replace(/ /g,' ')}
+function controlli(){
+ var t=testo(),r=[];
+ var segn=(t.match(/\[DA VERIFICARE[^\]]*\]/gi)||[]).length;
+ r.push(segn?{t:'blocca',x:'Ci sono '+segn+' segnaposto [DA VERIFICARE]: vanno risolti o tolti.'}:{t:'ok',x:'Nessun segnaposto [DA VERIFICARE].'});
+ r.push(data.sources.length?{t:'ok',x:data.sources.length+' fonti allegate per il controllo.'}:{t:'avviso',x:'Nessuna fonte allegata: controlla a mano prima di inviare.'});
+ var nv=(t.match(/,\s+(?:ed|e)(?=\s)/g)||[]).length;
+ if(nv)r.push({t:'avviso',x:nv+' virgole prima di “e”.',f:'virgola'});
+ var ne=(t.match(/\b(?:ed|ad)\s+(?=[bcdfgjklmnpqrstvwxyz])/gi)||[]).length;
+ if(ne)r.push({t:'avviso',x:ne+' “ed/ad” davanti a consonante.',f:'ed'});
+ var nq=(t.match(/["«»']/g)||[]).length;
+ if(nq)r.push({t:'avviso',x:nq+' virgolette o apostrofi dritti (nel tuo stile: “ ” e ’).',f:'virgolette'});
+ var vi=[],m;VIETATE.lastIndex=0;while((m=VIETATE.exec(t)))vi.push(m[1].toLowerCase());
+ if(vi.length)r.push({t:'avviso',x:'Formule da evitare: '+vi.filter(function(x,i){return vi.indexOf(x)===i}).map(function(x){return '“'+x+'”'}).join(', ')+'.'});
+ if(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}]/u.test(t)||/(^|\s)#\w+/.test(t))r.push({t:'avviso',x:'Emoji o hashtag nel testo (non nel tuo stile).'});
+ if(titolo.value.length>80)r.push({t:'avviso',x:'Titolo lungo ('+titolo.value.length+' caratteri): sul telefono si taglia.'});
+ if(!riass.value.trim())r.push({t:'info',x:'Riassunto breve vuoto.'});
+ r.push(provato?{t:'ok',x:'Prova inviata sul testo attuale.'}:{t:'blocca',x:'Prova da inviare sul testo attuale (obbligatoria prima dell’invio a tutti).'});
+ return r}
+function aggiorna(){
+ var t=testo().trim(),p=t?t.split(/\s+/).length:0;
+ $('s-par').textContent=p;$('s-let').textContent=Math.max(1,Math.round(p/200));
+ $('c-titolo').textContent=titolo.value.length+' caratteri nel titolo';
+ $('c-riass').textContent=riass.value.length+' / 300';
+ var ul=$('contr');ul.textContent='';
+ controlli().forEach(function(c){var li=document.createElement('li'),pt=document.createElement('span'),tx=document.createElement('span');
+  pt.className='punto '+c.t;tx.textContent=c.x;
+  if(c.f){var b=document.createElement('button');b.type='button';b.className='fix';b.textContent='Sistema';
+   b.onclick=function(){var n=CORREZIONI[c.f]();cambiato();avviso(n?'Fatto: '+n+' parti corrette.':'Niente da correggere.','ok')};tx.appendChild(b)}
+  li.appendChild(pt);li.appendChild(tx);ul.appendChild(li)});
+ var cg=$('chip-ghost');cg.textContent=data.ghostPronto?'Ghost collegato':'Ghost non collegato';cg.className='chip '+(data.ghostPronto?'ok':'warn');
+ var cp=$('chip-prova');cp.textContent=provato?'Prova inviata':'Prova da inviare';cp.className='chip '+(provato?'ok':'warn');
+ titolo.style.height='auto';titolo.style.height=titolo.scrollHeight+'px';
+ if(!$('vista-ant').hidden)anteprima()}
+titolo.addEventListener('input',cambiato);riass.addEventListener('input',cambiato);
+titolo.addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();ed.focus()}});
+
+/* ---------- anteprima dell'email ---------- */
+function anteprima(){
+ $('m-newsletter').textContent=data.newsletter;$('m-oggetto').textContent=titolo.value;$('m-pre').textContent=riass.value;
+ $('m-corpo').innerHTML=pulisci(ed.innerHTML)}
+function vista(v){var a=v==='ant';$('vista-mod').hidden=a;$('vista-ant').hidden=!a;
+ $('v-mod').classList.toggle('on',!a);$('v-ant').classList.toggle('on',a);if(a)anteprima()}
+$('v-mod').onclick=function(){vista('mod')};$('v-ant').onclick=function(){vista('ant')};
+$('d-tel').onclick=function(){$('mail').className='mail telefono';$('d-tel').classList.add('on');$('d-pc').classList.remove('on')};
+$('d-pc').onclick=function(){$('mail').className='mail';$('d-pc').classList.add('on');$('d-tel').classList.remove('on')};
+
+/* ---------- salvataggio, prova, invio, eliminazione ---------- */
+$('b-salva').onclick=function(){salva(true)};
+$('b-prova').onclick=function(){
+ if(!data.provaPronta){avviso('Email di prova non configurata (manca EMAIL_PROVA).','err');return}
+ stato('Invio della prova…','');$('b-prova').disabled=true;
+ chiama('test').then(function(r){$('b-prova').disabled=false;
+  if(r.ok){sporco=false;provato=true;stato('Prova inviata alle '+ora(),'ok');avviso(r.j.message,'ok');aggiorna()}
+  else{stato('Prova non riuscita','err');avviso(r.j.error||'Errore','err')}
+ }).catch(function(e){$('b-prova').disabled=false;avviso(String(e),'err')})};
+function apriInvio(){
+ var c=controlli(),ul=$('inv-lista');ul.textContent='';
+ var blocchi=c.filter(function(x){return x.t==='blocca'}).length;
+ function voce(tipo,x){var li=document.createElement('li'),p=document.createElement('span'),s=document.createElement('span');p.className='punto '+tipo;s.textContent=x;li.appendChild(p);li.appendChild(s);ul.appendChild(li)}
+ c.forEach(function(x){voce(x.t,x.x)});
+ if(!data.invioAttivo){voce('blocca','L’invio a tutti è ancora spento: si attiva dopo la prova con Ghost.');blocchi++}
+ if(!data.ghostPronto){voce('blocca','Ghost non è collegato (manca la chiave).');blocchi++}
+ $('inv-dest').textContent='Destinatari: iscritti a «'+data.newsletter+'». Non si può annullare.';
+ $('inv-conf').value='';$('inv-ok').disabled=true;$('dl-invio').dataset.blocchi=blocchi;$('dl-invio').showModal();$('inv-conf').focus()}
+$('inv-conf').addEventListener('input',function(){$('inv-ok').disabled=!($('inv-conf').value==='INVIA'&&$('dl-invio').dataset.blocchi==='0')});
+$('b-invia').onclick=apriInvio;$('inv-no').onclick=function(){$('dl-invio').close()};
+$('inv-ok').onclick=function(){$('inv-ok').disabled=true;$('inv-ok').textContent='Invio in corso…';
+ chiama('send',{confirm:$('inv-conf').value}).then(function(r){
+  $('inv-ok').textContent='Invia ora';
+  if(r.ok){sporco=false;$('dl-invio').close();avviso(r.j.message,'ok');setTimeout(function(){location.href='/anteprime'},2500)}
+  else{$('dl-invio').close();avviso(r.j.error||'Errore','err')}
+ }).catch(function(e){$('inv-ok').textContent='Invia ora';avviso(String(e),'err')})};
+$('b-elimina').onclick=function(){$('dl-del').showModal()};$('del-no').onclick=function(){$('dl-del').close()};
+$('del-ok').onclick=function(){chiama('delete').then(function(r){if(r.ok){sporco=false;location.href='/anteprime'}else avviso(r.j.error||'Errore','err')})};
+
+/* ---------- avvio ---------- */
+titolo.value=data.title;riass.value=data.summary;
+ed.innerHTML=pulisci(data.html)||'<p><br></p>';
+var fo=$('fonti');
+if(!data.sources.length){var l0=document.createElement('li');l0.textContent='Nessuna fonte allegata.';fo.appendChild(l0)}
+data.sources.forEach(function(s){var li=document.createElement('li');
+ if(s.url){var a=document.createElement('a');a.href=s.url;a.target='_blank';a.rel='noopener noreferrer';a.textContent=s.title||s.url;li.appendChild(a)}else li.textContent=s.title;
+ if(s.note){var n=document.createElement('span');n.className='mut';n.textContent=' — '+s.note;li.appendChild(n)}
+ fo.appendChild(li)});
+aggiorna();stato('Tutto salvato','ok');
 })();
 `;
