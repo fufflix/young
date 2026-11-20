@@ -1,5 +1,5 @@
 # Facoltativo: serve solo se pubblichi con wrangler. Dalla dashboard si fa tutto a mano (vedi README.md).
-# NIENTE segreti qui: GHOST_ADMIN_KEY, INGEST_TOKEN, ACCESS_AUD, ACCESS_TEAM_DOMAIN, TEST_EMAIL e ALLOWED_EMAIL
+# NIENTE segreti qui: CHIAVE_GHOST, CODICE_BOZZE, ACCESS_AUD, ACCESS_TEAM_DOMAIN, EMAIL_PROVA e EMAIL_AUTORIZZATA
 # si impostano come secret/variabili su Cloudflare.
 name = "anteprime-newsletter"
 main = "src/worker.js"

@@ -112,7 +112,7 @@ async function requireAccess(request, env) {
     'RSASSA-PKCS1-v1_5', key, b64urlToBytes(parts[2]), enc.encode(parts[0] + '.' + parts[1])
   );
   if (!ok) throw new HttpError(401, 'Firma del token non valida.');
-  const allowed = String(env.ALLOWED_EMAIL || '').trim().toLowerCase();
+  const allowed = String(env.EMAIL_AUTORIZZATA || '').trim().toLowerCase();
   if (allowed && String(payload.email || '').toLowerCase() !== allowed) {
     throw new HttpError(403, 'Utente non autorizzato.');
   }
@@ -207,10 +207,10 @@ async function hashDraft(d) {
 
 async function ingest(request, env) {
   if (request.method !== 'POST') throw new HttpError(405, 'Metodo non consentito');
-  if (!env.INGEST_TOKEN || String(env.INGEST_TOKEN).length < 24) throw new HttpError(503, 'Ingest non configurato');
+  if (!env.CODICE_BOZZE || String(env.CODICE_BOZZE).length < 24) throw new HttpError(503, 'Ingest non configurato');
   const h = request.headers.get('Authorization') || '';
   const given = h.startsWith('Bearer ') ? h.slice(7) : '';
-  if (!(await safeEqual(given, String(env.INGEST_TOKEN)))) throw new HttpError(401, 'Non autorizzato');
+  if (!(await safeEqual(given, String(env.CODICE_BOZZE)))) throw new HttpError(401, 'Non autorizzato');
 
   let body;
   try {
@@ -283,18 +283,18 @@ async function action(request, env, name, id) {
   }
 
   if (name === 'test') {
-    if (!env.TEST_EMAIL) throw new HttpError(503, 'TEST_EMAIL non configurata');
+    if (!env.EMAIL_PROVA) throw new HttpError(503, 'EMAIL_PROVA non configurata');
     const nl = await findNewsletter(env);
     const hash = d.__hash;
     delete d.__hash;
     await syncGhostDraft(env, d);
     await putDraft(env, d); // salva subito ghostPostId: niente bozze doppie su Ghost se il test fallisce
     await ghost(env, 'POST', '/email_previews/posts/' + d.ghostPostId + '/?newsletter=' + encodeURIComponent(nl.slug), {
-      emails: [String(env.TEST_EMAIL)],
+      emails: [String(env.EMAIL_PROVA)],
     });
     d.testedHash = hash;
     await putDraft(env, d);
-    return json({ ok: true, message: 'Email di test inviata a ' + env.TEST_EMAIL + '. Controllala, poi puoi inviare a tutti.' });
+    return json({ ok: true, message: 'Email di test inviata a ' + env.EMAIL_PROVA + '. Controllala, poi puoi inviare a tutti.' });
   }
 
   if (name === 'send') {
@@ -351,9 +351,9 @@ function bytesToB64url(b) {
 }
 
 export async function ghostToken(env) {
-  const [id, secret] = String(env.GHOST_ADMIN_KEY || '').split(':');
+  const [id, secret] = String(env.CHIAVE_GHOST || '').split(':');
   if (!id || !secret || !/^[0-9a-fA-F]+$/.test(secret) || secret.length % 2) {
-    throw new HttpError(503, 'GHOST_ADMIN_KEY mancante o in formato non valido (atteso id:segreto)');
+    throw new HttpError(503, 'CHIAVE_GHOST mancante o in formato non valido (atteso id:segreto)');
   }
   const iat = Math.floor(Date.now() / 1000);
   const head = bytesToB64url(enc.encode(JSON.stringify({ alg: 'HS256', typ: 'JWT', kid: id })));
@@ -432,7 +432,7 @@ async function ghostCheck(env) {
     newsletters: (data.newsletters || []).map((n) => ({
       name: n.name, slug: n.slug, status: n.status, usata_per_gli_invii: String(n.name).trim().toLowerCase() === wanted,
     })),
-    test_email_configurata: !!env.TEST_EMAIL,
+    test_email_configurata: !!env.EMAIL_PROVA,
     invio_a_tutti_attivo: String(env.ALLOW_SEND || '') === 'yes',
     email_only: String(env.EMAIL_ONLY || 'true') !== 'false',
   });
