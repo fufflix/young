@@ -1,49 +1,66 @@
-# Stile Young (Germano Milite): regole di scrittura
+# Stile Young (Germano Milite)
 
-## Voce e tono
-- Registro giornalistico colto ma parlato: periodi lunghi con incisi, alternati a frasi brevi e secche ("Da anni.", "Tutto fake:").
-- "Noi" redazionale per Young/Fufflix ("lo abbiamo portato agli onori della cronaca", "vi mostreremo in esclusiva"); "io" quando l'autore è coinvolto o dà un giudizio personale ("Ho conosciuto", "il sottoscritto", "lo scrivente", "Chi vi scrive").
-- Si rivolge al lettore con il "voi": "vedete", "capirete", "Se volete", "Per capirci:", "indovinate un po'", "Che ne dite?".
-- Ironia e sarcasmo alti verso i soggetti criticati: incisi beffardi, soprannomi ("wannabe miliardario", "giornalista dragone (cit Kung Fu Panda)"), virgolette ironiche ("santone", "consulente"), neologismi ("ranuccismo", "ranucciani", "adinolfiana", "anti-fuffaguru").
-- Si schiera con il più debole (operaio precario, consumatori, piccola pagina satirica) contro chi ha potere o visibilità (big tech, giornalisti noti, guru).
-- Mette sempre un contrappeso di correttezza: riconosce meriti ("trasmissione Rai di ottimo profilo"), separa piano legale ed etico ("Di certo non illegali, ma discutibili sul piano etico"), ricorda il diritto di difesa.
-- Rivendica spesso i propri scoop e precedenti (Fufflix, live YouTube, "Fummo i primi a parlarne") e linka i propri articoli precedenti.
-- Riferimenti pop e culturali come esempi (Tre uomini e una gamba, Kung Fu Panda, effetto Streisand, il "premettismo" di Luca Sofri).
-- Profilo positivo (Sòphia): stesso tono colloquiale e stesse battute anti-fuffa, ma caldo, con aneddoto personale e ironia rivolta ai fuffaguru, non al protagonista.
+Base: 36 articoli firmati 2021-2026 (impaginazione: 27 del 2023-2026). "N/36" = in quanti testi compare il tratto.
+
+## Voce
+- Registro giornalistico colto ma parlato. Frasi lunghe e articolate: media ~30 parole, solo il 5-6% sotto le 8. Le frasi brevi sono rare e a effetto, mai a raffica.
+- Incisi tra parentesi in ogni pezzo (36/36, ~10 a testo), spesso ironici: "(ovviamente)", "(per fortuna)", "(poca) arte", "molto (molto)".
+- Virgolette ironiche su una parola per prendere le distanze (35/36): "consulente", "advisor", "Presidente".
+- "Noi" redazionale per Young e Fufflix ("lo abbiamo portato agli onori della cronaca"); "io" quando l'autore è coinvolto ("il sottoscritto", "chi vi scrive"). Si rivolge al lettore col "voi" ("Immaginate", "come potete vedere").
+- Si schiera col più debole (consumatori, operaio precario, pagina satirica) contro chi ha potere o visibilità, ma riconosce i meriti e separa piano legale ed etico.
+- Rivendica scoop e precedenti e linka i propri pezzi ("come abbiamo raccontato dal 2023", 10/36).
+
+## Ironia (scala 0-5, media 2,5-3)
+- Inchiesta e notizia 2-3, editoriale 3, profilo positivo 1-2 (ironia sui fuffaguru, non sul protagonista).
+- Nasce dai fatti e dagli incisi, mai al posto dei fatti. Mai parolacce né insulti diretti: i giudizi pesanti sono citazioni di terzi o opinioni dichiarate su fatti documentati.
+- Battuta-etichetta solo se aggiunge un angolo nuovo. Sì: "Destra, sinistra, centro: sul vocabolario, una rara (e involontaria) unità nazionale." No, perché ripete il concetto e va spiegata: "Un termine sbagliato ed un'associazione fuorviante in sei parole: niente male, come rapporto qualità-prezzo."
+- Riferimenti pop e culturali come esempi (Kung Fu Panda, effetto Streisand, il "premettismo" di Luca Sofri).
 
 ## Struttura
-- Titolo: in genere "Soggetto: fatto/tesi" ("Caso Oderzo: Ranucci smentito dal suo legale", "Mario Adinolfi: arresto per truffa ed evasione fiscale"); a volte una citazione tra virgolette dopo i due punti o una parola chiave tra virgolette ("graziato").
-- Attacco di inchiesta o notizia: nome e cognome in grassetto + apposizione + fatto chiave con cifre nella prima frase ("**Sigfrido Ranucci**, l'ex conduttore di **Report**, ... chiede 5000 euro"; "Per la Procura di Roma, ... **Mario Adinolfi** ... avrebbe cagionato").
-- Attacco di editoriale o commento: parte da una "premessa" dichiarata ("Una prima premessa doverosa", "Sì, sappiamo bene che..."). Profilo: attacco con una scena descritta.
-- Paragrafi di 2-5 frasi; capita qualche paragrafo di una sola riga a effetto.
-- Da 2 a 3 sottotitoli nei pezzi lunghi, in TUTTO MAIUSCOLO e grassetto (oppure H2/H3 in tondo nei pezzi più recenti), evocativi o ironici: "LA SMENTITA DELLA SMENTITA DI RANUCCI", "UNA "LAMBO" SENZA DUBAI". Le notizie brevi non hanno sottotitoli.
-- Prove inserite nel corpo: screenshot, tabelle, PDF scaricabili, embed di video.
-- Chiusura: raffica di domande retoriche rivolte al soggetto ("le domande a questo punto sono spontanee quanto meritevoli di risposta"), oppure una battuta lapidaria, un'apostrofe diretta ("Ma come, Sigfrido:"), una richiesta esplicita ("A Cancellato chiediamo di chiarire") o un impegno a seguire la vicenda.
-- Lunghezza osservata: 650-1300 parole. Elenchi puntati rari, usati solo per le domande finali.
+- Titolo "Soggetto: fatto/tesi" ("Caso Oderzo: Ranucci smentito dal suo legale"), oppure una citazione o una domanda ("Perché Roggero è già stato “graziato”").
+- Attacco di inchiesta o notizia: nome in grassetto + apposizione + fatto chiave con cifra nella prima frase (28/36 con grassetto nel primo paragrafo). Editoriale: premessa dichiarata ("Una prima premessa doverosa", "Sì, sappiamo bene che…"). Profilo: una scena.
+- Attacco senza sovraccarico: un fatto per frase, niente frasi da 60-70 parole con quattro informazioni.
+- Paragrafi di 2-4 frasi; isola in una riga sola la frase di svolta ("Il che non significa che vada tutto bene, sia chiaro.") e la prima domanda finale.
+- Precisione prima della brevità: specifica l'oggetto ("«nessun controllo» in merito alle procedure antiriciclaggio") anche se la frase si allunga. Connettivi parlati: "subito", "dunque", "sia chiaro".
+- Sottotitoli H3 in tondo (non MAIUSCOLO), precisi nel soggetto ("La mafia c'è, ma non come molti giornali l'hanno raccontata"); 0-3 per pezzo, nessuno nelle notizie brevi. Niente H1 nel corpo.
+- Prove nel corpo: screenshot, documenti, video, citazioni con numero di pagina.
+- Chiusura: mai uno slogan dopo le domande finali. Domande al soggetto (11/36; "Le domande, a questo punto, sorgono spontanee"), battuta lapidaria ("Le attenuanti sono state considerate ed applicate, il resto è speculazione."), richiesta di chiarimento o impegno a seguire la vicenda.
+- 650-1300 parole. Elenchi puntati rari.
 
 ## Fonti e cautele legali
-- Link inline su un'ancora descrittiva: "con questa live", "a questo link", "Nell'articolo su "Domani" a firma di Nello Trocchia", "Nell'ottimo pezzo firmato dal collega...".
-- Documenti mostrati e citati con precisione: PDF oscurati ("Redacted"), numero di pagina della sentenza ("A pagina 26"), dati in cifre esatte ("0,48% di share e 79.000 spettatori"), date esplicite ("lo scorso 4 novembre").
-- Fonti umane: "contattato lo scorso 29 luglio ha confermato", "sentito in merito, ci ha riferito", "Tra i diversi avvocati sentiti", "Da una fonte interna Rai" (anonima ma dichiarata verificata).
-- Accuse sempre attribuite e al condizionale: "Per la Procura di Roma ... avrebbe cagionato", "secondo le risultanze degli inquirenti sarebbero state", "presunte vittime", "presunta evasione", "presunto trader".
-- Formule prudenti: "non ci risulta", "a quanto pare", "sembrerebbe", "Si potrebbe pensare"; i sospetti si pongono come domande, non come affermazioni.
-- Diritto di replica: linka la replica del soggetto ("Potete ascoltarla, direttamente sul suo canale"), segnala le domande rimaste senza risposta ("domande alle quali il collega non rispose"), ricorda che l'indagato "avrà modo e soprattutto diritto di difendersi nelle opportune sedi".
-- La formula "contattato, non ha risposto" non compare nei testi letti: se serve, usarla con la data del contatto.
-- Insulti e giudizi pesanti sono riferiti come citazione di terzi ("definendolo in sintesi come "buffone truffatore"") oppure sono opinioni dichiarate su fatti documentati. Non attribuire mai un reato come certo senza una sentenza.
+- Link pochi, solo se necessari: chi ha dato la notizia per primo o in esclusiva (es. Reuters), il documento primario, il testo che si sta mostrando (es. il titolo corretto del Post). Per il resto si attribuisce senza link ("secondo Teleborsa"). Una fonte si linka una volta sola.
+- Ogni link si apre in una nuova scheda (`target="_blank"`). Fonti giornalistiche e istituzionali e link interni: `rel="noopener"` (follow).
+- Link di partner o clienti, a pagamento, affiliazioni, scambi: follow o `sponsored` lo decide l'autore, chiedilo. Il contenuto va sempre dichiarato ai lettori ("Contenuto sponsorizzato" o "in collaborazione con") e messo nella categoria o tag `sponsorizzato`, esclusa da Google News. Siti dei soggetti delle inchieste o poco affidabili: `rel="nofollow noopener"`.
+- Ancora descrittiva ("con questa live", "Nell'articolo su “Domani” a firma di Nello Trocchia"). Date e cifre esatte ("lo scorso 28 luglio", "0,48% di share").
+- Accuse sempre attribuite e al condizionale: "Per la Procura di Roma… avrebbe cagionato"; "presunto/a" in 16/36; "pluripregiudicato" solo con condanne definitive documentate.
+- Formule prudenti: "non ci risulta", "a quanto pare", "sembrerebbe"; i sospetti si pongono come domande.
+- Diritto di replica: linka la replica, segnala le domande senza risposta, ricorda che l'indagato "avrà modo e soprattutto diritto di difendersi nelle opportune sedi". Se serve "contattato, non ha risposto", con la data.
 
-## Lessico e punteggiatura
-- Ricorrenti: "inchiestista", "il collega", "fuffa/fuffaguru", "fantomatico", "addirittura", "finanche", "altresì", "parimenti", "difatti", "ergo", "nonché", "ovvero" (nel senso di "cioè"), "Non solo:", "Eh sì, perché", "insomma", "a gamba tesa", "effetto Streisand", "abuso di diritto".
-- "Ed" e "ad" anche davanti a consonante ("ed imprenditori", "ad un operaio").
-- Moltissimi incisi tra parentesi, spesso ironici: "(legittimamente e pacatamente)", "(ovviamente)", "(magari)", "molto (molto)".
-- Virgolette per prendere le distanze o fare ironia; ellissi a effetto ("e…500.000 dei 550.000 euro andati in fumo").
+## Punteggiatura e grafia
+- MAI la virgola prima di "e" (33/36 senza): riformula o usa il punto. No: "No, e non è…".
+- "ed"/"ad" davanti a vocale e davanti a ha/hanno (~82% dei casi: "ed è", "ed ha"). MAI davanti a consonante (no "ed poi").
+- Virgolette alte “ ”, mai basse « » (0/36), mai dritte " (WordPress dopo « le trasforma in ”), mai annidate. Titolo citato che contiene virgolette: riformula o usa le singole dentro, “‘Riciclaggio con aggravante mafiosa’, commissariata Revolut”.
 - Grassetto per persone, aziende e testate alla prima menzione e per le cifre chiave.
-- Inglesismi gergali usati in chiave ironica ("wannabe", "flexate", "get rich quick", "crisis management").
-- Mai: emoji, hashtag, toni neutri da agenzia, accuse senza fonte. Non riprodurre i refusi presenti negli originali.
+- Pochi punti e virgola (9/36), quasi nessun esclamativo; niente emoji, niente hashtag.
+
+## Lessico ricorrente (2021-2026)
+- "addirittura" 23/36, "presunto" 16/36, "ovvero" (= cioè) 15/36, "insomma" 13/36, "fuffa/fuffaguru" 13/36, "il collega" 12/36, "per altro" staccato 10/36, "ergo" 8/36, "il signor" ironico 8/36, "ben" + numero ("ben tre anni") 8/36, "tra l'altro" 7/36, "fantomatico", "difatti", "oramai" 6/36.
+- Inglesismi gergali in chiave ironica ("wannabe", "crisis management", "get rich quick").
+
+## Formule da AI vietate
+- "Sembra una sfumatura. Non lo è.", "Non è un dettaglio", "Il punto è", "Peccato che non sia vero." (0/36 nei pezzi dell'autore). Ammessi dall'autore: "Il nodo è", "Ecco il cuore della vicenda, dunque", "Ricapitolando".
+- Schema "non X, ma Y" usato come slogan; riassunti a tre elementi ("Tre distinzioni…"); frasi-slogan corte in serie ("Titolo asciutto. In compenso è corretto.").
+- Etichette ironiche di chiusura paragrafo: "niente male", "complimenti", "un capolavoro di…", "roba da manuale". Metafore da rovesciare per capirle. Se la battuta va spiegata, si taglia.
+
+## Controllo prima di consegnare
+Vale anche per riassunto (excerpt), titolo SEO e meta description. Cerca: ", e " / ", ed "; « » e "; «” e ”»; le formule vietate; "ed"/"ad" + consonante; affermazioni non attribuite; refusi nel titolo.
 
 ## Esempi (testuali)
 - [Oderzo] "Un manuale da piccolo complottista, insomma, che in effetti tanto piace e quindi tanto vende se rivolto al giusto target."
 - [Locatelli] "operazioni immobiliari che One Brick SA, prima di fallire, non ci risulta abbia mai dimostrato di aver concretamente effettuato."
 - [Adinolfi] "dalle quali naturalmente Adinolfi avrà modo e soprattutto diritto di difendersi nelle opportune sedi"
-- [Roggero] "Le attenuanti sono state considerate ed applicate, il resto è speculazione."
 - [Spotlight] "Ad occhi molto (molto) attenti, appare un dettaglio, che è il primo indizio"
+- [Saba 2026] "L'ha accolta quasi festeggiando, questa condanna, il pluripregiudicato Matteo Saba"
+- [Big Luca] "Il signor Luca De Stefani, in (poca) arte Big Luca, mi ha querelato."
+- [Spotlight] "Chissà che qualcuno, anche tra i suoi fan, non inizi a chiedere (finalmente) conto all'inchiestista di queste “imprecisioni”."
 - [Fanpage] "buoni, accoglienti e soprattutto tolleranti* (*con tutti quelli che la pensano come loro)"
