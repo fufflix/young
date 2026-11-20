@@ -525,8 +525,16 @@ async function ghostBozza(request, env) {
     if (b.image_alt) post.feature_image_alt = String(b.image_alt).slice(0, 191);
     if (b.image_caption) post.feature_image_caption = String(b.image_caption).slice(0, 500);
   }
-  const r = await ghost(env, 'POST', '/posts/?source=html', { posts: [post] });
-  const p = r.posts[0];
+  let p;
+  if (b.postId) {
+    const pid = encodeURIComponent(String(b.postId));
+    const cur = await ghost(env, 'GET', '/posts/' + pid + '/');
+    if (cur.posts[0].status !== 'draft') throw new HttpError(409, 'Il post su Ghost non è più una bozza: non lo modifico');
+    post.updated_at = cur.posts[0].updated_at;
+    p = (await ghost(env, 'PUT', '/posts/' + pid + '/?source=html', { posts: [post] })).posts[0];
+  } else {
+    p = (await ghost(env, 'POST', '/posts/?source=html', { posts: [post] })).posts[0];
+  }
   if (b.draftId && /^[0-9a-f-]{36}$/.test(String(b.draftId))) {
     const d = await getDraft(env, String(b.draftId));
     if (d) { d.ghostPostId = p.id; await putDraft(env, d); }
