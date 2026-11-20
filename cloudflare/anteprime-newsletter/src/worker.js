@@ -51,6 +51,10 @@ async function route(request, env) {
   if (!env.ANTEPRIME) throw new HttpError(503, 'Binding KV "ANTEPRIME" mancante');
 
   if (path === BASE + '/ingest') return ingest(request, env);
+  if (path === BASE + '/ghost-bozza' && request.method === 'POST') {
+    await requireToken(request, env);
+    return ghostBozza(request, env);
+  }
   if (path === BASE + '/stato' && request.method === 'GET') {
     await requireToken(request, env);
     return ghostCheck(env);
@@ -473,6 +477,67 @@ async function syncGhostDraft(env, d) {
   }
   const r = await ghost(env, 'POST', '/posts/?source=html', { posts: [post] });
   d.ghostPostId = r.posts[0].id;
+}
+
+/** Carica un'immagine su Ghost e restituisce l'indirizzo. */
+async function ghostUpload(env, bytes, name, type) {
+  if (!/^image\/(jpeg|png|webp)$/.test(type)) throw new HttpError(400, 'Formato immagine non ammesso');
+  const fd = new FormData();
+  fd.append('file', new Blob([bytes], { type }), String(name).replace(/[^\w.-]/g, '_'));
+  fd.append('purpose', 'image');
+  const base = String(env.GHOST_URL).replace(/\/+$/, '');
+  const res = await fetch(base + '/ghost/api/admin/images/upload/', {
+    method: 'POST',
+    headers: { Authorization: 'Ghost ' + (await ghostToken(env)), 'Accept-Version': 'v5.0' },
+    body: fd,
+  });
+  const txt = await res.text();
+  let data = null;
+  try { data = JSON.parse(txt); } catch { /* non JSON */ }
+  if (!res.ok) {
+    throw new HttpError(502, 'Ghost ' + res.status + ': ' + ((data && data.errors && data.errors[0] && data.errors[0].message) || txt.slice(0, 200)));
+  }
+  return data.images[0].url;
+}
+
+/** Crea una BOZZA su Ghost (mai invio), con immagine di copertina e categoria facoltative. */
+async function ghostBozza(request, env) {
+  let b;
+  try { b = await request.json(); } catch { throw new HttpError(400, 'JSON non valido'); }
+  const title = String(b.title || '').trim().slice(0, 255);
+  const html = cleanHtml(b.html || '');
+  if (!title || !html.trim()) throw new HttpError(400, 'title e html obbligatori');
+  const post = { title, html, status: 'draft' };
+  if (b.summary) post.custom_excerpt = String(b.summary).slice(0, 300);
+  let tag = null;
+  if (b.tag === 'casuale') {
+    const t = await ghost(env, 'GET', '/tags/?limit=all&filter=' + encodeURIComponent('visibility:public'));
+    const list = t.tags || [];
+    if (list.length) {
+      tag = list[crypto.getRandomValues(new Uint32Array(1))[0] % list.length];
+      post.tags = [{ name: tag.name }];
+    }
+  }
+  if (b.image_base64) {
+    const bytes = Uint8Array.from(atob(String(b.image_base64)), (c) => c.charCodeAt(0));
+    if (bytes.length > 5000000) throw new HttpError(413, 'Immagine troppo grande');
+    post.feature_image = await ghostUpload(env, bytes, b.image_name || 'copertina.jpg', b.image_type || 'image/jpeg');
+    if (b.image_alt) post.feature_image_alt = String(b.image_alt).slice(0, 191);
+    if (b.image_caption) post.feature_image_caption = String(b.image_caption).slice(0, 500);
+  }
+  const r = await ghost(env, 'POST', '/posts/?source=html', { posts: [post] });
+  const p = r.posts[0];
+  if (b.draftId && /^[0-9a-f-]{36}$/.test(String(b.draftId))) {
+    const d = await getDraft(env, String(b.draftId));
+    if (d) { d.ghostPostId = p.id; await putDraft(env, d); }
+  }
+  return json({
+    ok: true, id: p.id, status: p.status,
+    editor: String(env.GHOST_URL).replace(/\/+$/, '') + '/ghost/#/editor/post/' + p.id,
+    categoria_scelta: tag ? tag.name : null,
+    categorie: (p.tags || []).map((x) => x.name),
+    immagine: p.feature_image || null,
+  }, 201);
 }
 
 async function ghostCheck(env) {
