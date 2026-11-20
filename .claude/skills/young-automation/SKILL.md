@@ -12,7 +12,7 @@ MCP Young: `https://young.it/wp-json/young-mcp/v1/mcp` (JSON-RPC, `tools/call`).
 1. Scrivere o correggere un testo: prima leggi `stile.md`.
 2. Bozza (`create_post`, `draft`) → link di anteprima all'autore. Pubblica o modifica pezzi online SOLO dopo un ok esplicito in chat.
 3. Prima di modificare un pezzo esistente salva l'HTML originale; sostituzioni mirate, mai rigenerare il contenuto.
-4. Nessun fatto, cifra o citazione inventata: il non verificato si segna [DA VERIFICARE] e non si pubblica. Ogni dato con fonte linkata, primaria se possibile.
+4. Nessun fatto, cifra o citazione inventata: il non verificato si segna [DA VERIFICARE] e non si pubblica. Ogni dato con fonte attribuita nel testo; link solo se necessari (regole in `stile.md`).
 5. Dopo la pubblicazione verifica online `<title>`, meta description, og:image.
 6. La dicitura AI la aggiunge il plugin Young SEO: non scriverla. Categorie solo esistenti (`list_terms`).
 
