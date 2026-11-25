@@ -3,6 +3,8 @@ name: copy-milite
 description: Stile copy di Germano Milite (Fufflix, Young). Usare SEMPRE prima di scrivere o rivedere qualunque testo in italiano destinato a lettori: pagine web, landing, one page, report, articoli, titoli, didascalie, post, email, meta description, alt text, testi di video e infografiche. Contiene le regole di voce e punteggiatura e il controllo obbligatorio prima della consegna.
 ---
 
+> **Utente: solo Windows.** Mai Mac né altro di Apple: niente domande sul sistema, niente istruzioni o scorciatoie per Mac, macOS, iPad, iPhone o Safari.
+
 # Copy Milite
 
 Regole valide in tutti i repo Fufflix. Prevalgono su qualunque altra guida di stile; le indicazioni del titolare per il singolo lavoro prevalgono su tutto.

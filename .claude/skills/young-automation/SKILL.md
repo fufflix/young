@@ -3,6 +3,8 @@ name: young-automation
 description: Scrivere, correggere, ottimizzare e pubblicare articoli su young.it (bozze, immagini, SEO) tramite il server MCP Young. Usare per ogni lavoro sul sito.
 ---
 
+> **Utente: solo Windows.** Mai Mac né altro di Apple: niente domande sul sistema, niente istruzioni o scorciatoie per Mac, macOS, iPad, iPhone o Safari.
+
 # Young Automation
 
 ## Accesso

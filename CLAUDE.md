@@ -6,5 +6,5 @@ Ogni lavoro su young.it segue la skill young-automation (caricata qui sotto). Pr
 
 ## Regole fisse sull'utente (valgono per sempre, in ogni sessione)
 
-- **Non usa Mac, mai.** Non chiedere che computer o sistema usa e non dare scorciatoie, percorsi o istruzioni per Mac: solo quelle per Windows/PC.
+- **Usa solo Windows. Mai Mac, mai Apple.** Non chiedere MAI che computer, sistema o browser Apple usa e non citare Mac, macOS, iPad, iPhone o Safari: scorciatoie, percorsi e istruzioni solo per Windows.
 - **Risolvi da solo.** Non proporre di passare il lavoro allo sviluppatore o ad altri: diagnosi, prove e correzioni le fai tu, con gli strumenti che hai.
