@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Young Archivio
  * Description: Accesso da amministratore, tramite chiave, per la manutenzione dell'archivio di young.it da parte di Claude: tutta l'API REST di WordPress più strumenti di ricerca e sostituzione in tutto il database, con prova a vuoto e annullamento.
- * Version:     1.2.0
+ * Version:     1.3.0
  * Requires PHP: 7.4
  * Author:      YOUng
  * License:     GPL-2.0-or-later
@@ -14,7 +14,7 @@ defined( 'ABSPATH' ) || exit;
 
 final class Young_Archivio {
 
-	const VERSION = '1.2.0';
+	const VERSION = '1.3.0';
 	const OPTION  = 'young_archivio_token';   // array( hash, user_id, created, last_used )
 	const HEADER  = 'HTTP_X_ARCHIVIO_TOKEN';  // intestazione X-Archivio-Token
 	const NS      = 'young-archivio/v1';
@@ -37,6 +37,9 @@ final class Young_Archivio {
 		add_filter( 'rest_authentication_errors', array( __CLASS__, 'rest_auth' ), 99 );
 		add_action( 'rest_api_init', array( __CLASS__, 'routes' ) );
 		add_action( 'template_redirect', array( __CLASS__, 'start_buffer' ), 0 );
+		// BuddyPress 7.1.0 ha una falla nell'API REST (CVE-2021-21389: un utente iscritto può diventare
+		// amministratore tramite buddypress/v1/members/me). L'archivio non usa quell'API: la spegniamo.
+		add_filter( 'bp_rest_api_is_available', '__return_false', 99 );
 		add_action( 'admin_menu', array( __CLASS__, 'menu' ) );
 		add_action( 'admin_post_young_archivio_token', array( __CLASS__, 'create_token' ) );
 		add_action( 'admin_post_young_archivio_revoke', array( __CLASS__, 'revoke_token' ) );
@@ -225,6 +228,7 @@ final class Young_Archivio {
 			'sql'           => 'tool_sql',
 			'svuota_cache'  => 'tool_flush',
 			'prova_regole'  => 'tool_test_rules',
+			'tema_usa'      => 'tool_theme_uses',
 		);
 		if ( ! isset( $map[ $tool ] ) ) {
 			return new WP_Error( 'young_archivio_tool', 'Strumento sconosciuto. Disponibili: ' . implode( ', ', array_keys( $map ) ), array( 'status' => 400 ) );
@@ -504,6 +508,38 @@ final class Young_Archivio {
 			$hits[] = array( 'regola' => $i, 'trovate' => $n );
 		}
 		return array( 'url' => $url, 'stato' => wp_remote_retrieve_response_code( $res ), 'regole' => $hits, 'cambiata' => $before !== $after, 'lunghezza_prima' => strlen( $before ), 'lunghezza_dopo' => strlen( $after ) );
+	}
+
+	/** Sola lettura: righe dei file PHP del tema attivo che contengono i testi cercati (per esempio "bp_"). */
+	private static function tool_theme_uses( $args ) {
+		$needles = array_values( array_filter( array_map( 'strval', (array) ( $args['cerca'] ?? array( 'bp_', 'buddypress' ) ) ) ) );
+		$dirs    = array_unique( array( get_stylesheet_directory(), get_template_directory() ) );
+		$out     = array();
+		$total   = 0;
+		foreach ( $dirs as $dir ) {
+			$it = new RecursiveIteratorIterator( new RecursiveDirectoryIterator( $dir, FilesystemIterator::SKIP_DOTS ) );
+			foreach ( $it as $file ) {
+				if ( 'php' !== strtolower( $file->getExtension() ) ) {
+					continue;
+				}
+				$lines = @file( $file->getPathname() ); // phpcs:ignore
+				if ( ! $lines ) {
+					continue;
+				}
+				foreach ( $lines as $n => $line ) {
+					foreach ( $needles as $needle ) {
+						if ( false !== stripos( $line, $needle ) ) {
+							$total++;
+							if ( count( $out ) < 300 ) {
+								$out[] = array( 'file' => str_replace( WP_CONTENT_DIR, '', $file->getPathname() ), 'riga' => $n + 1, 'testo' => mb_substr( trim( $line ), 0, 200 ) );
+							}
+							break;
+						}
+					}
+				}
+			}
+		}
+		return array( 'cercati' => $needles, 'totale' => $total, 'righe' => $out );
 	}
 
 	private static function tool_flush() {
