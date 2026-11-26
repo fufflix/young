@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Young Archivio
  * Description: Accesso da amministratore, tramite chiave, per la manutenzione dell'archivio di young.it da parte di Claude: tutta l'API REST di WordPress più strumenti di ricerca e sostituzione in tutto il database, con prova a vuoto e annullamento.
- * Version:     1.1.0
+ * Version:     1.2.0
  * Requires PHP: 7.4
  * Author:      YOUng
  * License:     GPL-2.0-or-later
@@ -14,7 +14,7 @@ defined( 'ABSPATH' ) || exit;
 
 final class Young_Archivio {
 
-	const VERSION = '1.1.0';
+	const VERSION = '1.2.0';
 	const OPTION  = 'young_archivio_token';   // array( hash, user_id, created, last_used )
 	const HEADER  = 'HTTP_X_ARCHIVIO_TOKEN';  // intestazione X-Archivio-Token
 	const NS      = 'young-archivio/v1';
@@ -626,3 +626,23 @@ final class Young_Archivio {
 }
 
 Young_Archivio::init();
+
+/*
+ * Il tema dell'archivio chiama smlsubform(), la funzione del modulo di Mail Subscribe List.
+ * Quel plugin è stato tolto (ed è ritirato da wordpress.org): senza questa funzione le pagine
+ * darebbero errore. Qui la funzione e lo shortcode [smlsubform] mostrano il pulsante per
+ * iscriversi alla newsletter su Ghost.
+ */
+if ( ! function_exists( 'smlsubform' ) ) {
+	function smlsubform( $atts = array() ) {
+		return '<p class="ya-newsletter" style="margin:1em 0;text-align:center"><a class="btn btn-warning" href="https://newsletter.fufflix.it/" target="_blank" rel="noopener" style="font-weight:700">Iscriviti alla newsletter</a></p>';
+	}
+	add_action(
+		'init',
+		static function () {
+			if ( ! shortcode_exists( 'smlsubform' ) ) {
+				add_shortcode( 'smlsubform', 'smlsubform' );
+			}
+		}
+	);
+}
