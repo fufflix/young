@@ -33,5 +33,10 @@
   "cerca": "#Young s\\.?r\\.?l\\.?#i",
   "sostituisci": "Mastino S.R.L.",
   "regex": true
+ },
+ {
+  "cerca": "#<!-- Global site tag \\(gtag\\.js\\) - Google Analytics -->\\s*<script async src=\"https://www\\.googletagmanager\\.com/gtag/js\\?id=UA-28701801-2\"></script>\\s*<script>.*?gtag\\('config', 'UA-28701801-2'\\);\\s*</script>#s",
+  "sostituisci": "",
+  "regex": true
  }
 ]
