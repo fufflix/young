@@ -48,7 +48,8 @@ class Young_SEO_Content {
 		}
 		self::$done[ $post->ID ] = true;
 
-		$before = Young_SEO::enabled( 'updated_date' ) ? self::updated_line( $post ) : '';
+		$before  = Young_SEO::enabled( 'preferred_source' ) ? self::preferred_source() : '';
+		$before .= Young_SEO::enabled( 'updated_date' ) ? self::updated_line( $post ) : '';
 		$after  = Young_SEO::enabled( 'author_box' ) ? self::author_box( $post ) : '';
 		if ( Young_SEO::enabled( 'ai_disclosure' ) && self::needs_disclosure( $post->ID ) ) {
 			$after .= '<p class="young-ai-disclosure">' . esc_html( Young_SEO::get( 'disclosure_text' ) ) . '</p>';
@@ -62,6 +63,28 @@ class Young_SEO_Content {
 			return false;
 		}
 		return '1' === $flag || metadata_exists( 'post', $post_id, '_young_mcp_created_by' );
+	}
+
+	/**
+	 * Pulsante "fonte preferita su Google": link diretto allo strumento di Google
+	 * (https://developers.google.com/search/docs/appearance/preferred-sources), senza script esterni.
+	 */
+	private static function preferred_source() {
+		$host = preg_replace( '/^www\./', '', (string) wp_parse_url( home_url(), PHP_URL_HOST ) );
+		if ( '' === $host ) {
+			return '';
+		}
+		$g = '<svg class="young-pref-g" viewBox="0 0 48 48" width="20" height="20" aria-hidden="true" focusable="false">'
+			. '<path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>'
+			. '<path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>'
+			. '<path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>'
+			. '<path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>'
+			. '</svg>';
+		return sprintf(
+			'<p class="young-pref-wrap"><a class="young-pref" href="%s" target="_blank" rel="noopener">%s<span>Scegli YOUng come fonte preferita su Google</span></a></p>',
+			esc_url( 'https://www.google.com/preferences/source?q=' . rawurlencode( $host ) ),
+			$g
+		);
 	}
 
 	private static function updated_line( WP_Post $post ) {
@@ -118,6 +141,6 @@ class Young_SEO_Content {
 		if ( ! is_singular( 'post' ) ) {
 			return;
 		}
-		echo "<style id=\"young-seo-css\">.young-updated{font-size:.85em;color:#6b6b6b;margin:0 0 1em}.young-ai-disclosure{font-size:.8em;color:#6b6b6b;border-top:1px solid #ddd;padding-top:.8em;margin-top:2em}.young-author-box{display:flex;gap:1em;align-items:flex-start;border-top:1px solid #ddd;padding-top:1em;margin-top:2em}.young-author-avatar{border-radius:50%}.young-author-name{font-weight:700;margin:0 0 .3em}.young-author-bio,.young-author-links{font-size:.9em;margin:0 0 .3em}</style>\n";
+		echo "<style id=\"young-seo-css\">.young-pref-wrap{margin:0 0 1.2em}.young-pref-wrap .young-pref{display:inline-flex;align-items:center;gap:.55em;padding:.45em .9em;border:1px solid #c9ced6;border-radius:10px;font-size:.85em;line-height:1.3;color:#1f3a4d;text-decoration:none;background:transparent}.young-pref-wrap .young-pref:hover,.young-pref-wrap .young-pref:focus-visible{border-color:#1f3a4d;text-decoration:none}.young-pref-wrap .young-pref-g{flex:none;width:18px;height:18px}@media (prefers-color-scheme:dark){.young-pref-wrap .young-pref{color:inherit;border-color:#555}}.young-updated{font-size:.85em;color:#6b6b6b;margin:0 0 1em}.young-ai-disclosure{font-size:.8em;color:#6b6b6b;border-top:1px solid #ddd;padding-top:.8em;margin-top:2em}.young-author-box{display:flex;gap:1em;align-items:flex-start;border-top:1px solid #ddd;padding-top:1em;margin-top:2em}.young-author-avatar{border-radius:50%}.young-author-name{font-weight:700;margin:0 0 .3em}.young-author-bio,.young-author-links{font-size:.9em;margin:0 0 .3em}</style>\n";
 	}
 }

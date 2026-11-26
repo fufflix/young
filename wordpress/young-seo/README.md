@@ -4,11 +4,15 @@ Piccolo componente aggiuntivo per young.it, pensato per affiancare **Yoast SEO**
 
 ## Installazione
 
-1. Zippa la cartella `wordpress/young-seo` (o usa `young-seo-1.2.0.zip`).
+1. Zippa la cartella `wordpress/young-seo` (o usa `young-seo-1.3.0.zip`).
 2. WordPress → Plugin → Aggiungi nuovo → Carica plugin → attiva.
 3. Impostazioni → Young SEO: controlla gli interruttori e salva.
 4. Se `/llms.txt` o `/news-sitemap.xml` rispondono 404: Impostazioni → Permalink → **Salva** (rigenera le regole di riscrittura). Funziona comunque `https://young.it/?young_llms=1`.
 5. Con Cloudflare/cache di pagina: svuota la cache dopo l'attivazione.
+
+## Novità 1.3
+
+- Pulsante «Scegli YOUng come fonte preferita su Google» in cima a ogni articolo: link diretto allo [strumento delle fonti preferite](https://developers.google.com/search/docs/appearance/preferred-sources) (`google.com/preferences/source?q=young.it`), con il logo G in SVG. Nessuno script di Google e nessun cookie, quindi non serve il consenso. Interruttore «Fonte preferita su Google» (attivo).
 
 ## Novità 1.2
 
@@ -25,6 +29,7 @@ Piccolo componente aggiuntivo per young.it, pensato per affiancare **Yoast SEO**
 | Funzione | Predefinito | Cosa fa |
 |---|---|---|
 | Nota sull'intelligenza artificiale | attiva | In fondo agli articoli creati con Young MCP (meta `_young_mcp_created_by`) o con la spunta "Intelligenza artificiale" nell'editor, un paragrafo in corpo piccolo `young-ai-disclosure`. Togliendo la spunta la nota sparisce anche dagli articoli MCP. Testo modificabile. |
+| Fonte preferita su Google | attiva | In cima all'articolo, prima del testo, un pulsante discreto (classe `young-pref`) che apre la pagina di Google per aggiungere il sito alle fonti preferite. |
 | Data di aggiornamento | attiva | "Aggiornato il gg/mm/aaaa alle hh:mm" in cima all'articolo se modificato più di 24 ore dopo la pubblicazione (fuso del sito). |
 | Box autore | spento | Avatar, nome, biografia e link del profilo (sito, X, Facebook, LinkedIn, Instagram, YouTube). I campi social usano le stesse chiavi di Yoast (`twitter`, `facebook`, …), quindi alimentano anche lo schema autore di Yoast; vengono aggiunti al profilo solo se mancano. |
 | Vecchio dominio | attiva | Sostituisce al volo `you-ng.it` / `www.you-ng.it` con il dominio attuale nel testo, negli URL delle immagini (anche `srcset`) e in immagine social, canonical e URL Open Graph di Yoast. Il pulsante **Scansione** conta le righe del database che contengono ancora il vecchio dominio, senza modificarle. |

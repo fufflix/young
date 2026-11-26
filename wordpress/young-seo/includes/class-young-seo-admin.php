@@ -97,6 +97,13 @@ class Young_SEO_Admin {
 						<td><?php self::checkbox( 'updated_date', 'Mostra "Aggiornato il …" se l\'articolo è stato modificato più di 24 ore dopo la pubblicazione' ); ?></td>
 					</tr>
 					<tr>
+						<th scope="row">Fonte preferita su Google</th>
+						<td>
+							<?php self::checkbox( 'preferred_source', 'Mostra in cima agli articoli il pulsante "Scegli YOUng come fonte preferita su Google"' ); ?>
+							<p class="description">Un semplice link alla pagina di Google per aggiungere il sito alle fonti preferite: nessuno script esterno, nessun cookie.</p>
+						</td>
+					</tr>
+					<tr>
 						<th scope="row">Box autore</th>
 						<td>
 							<?php self::checkbox( 'author_box', 'Mostra il box autore in fondo agli articoli' ); ?>
