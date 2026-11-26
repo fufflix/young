@@ -104,6 +104,13 @@ class Young_SEO_Admin {
 						</td>
 					</tr>
 					<tr>
+						<th scope="row">Popup newsletter</th>
+						<td>
+							<?php self::checkbox( 'newsletter_popup', 'Mostra negli articoli il popup per iscriversi alla newsletter (newsletter.fufflix.it)' ); ?>
+							<p class="description">Compare a metà lettura o dopo 30 secondi, mai sopra il banner dei cookie. Chi lo chiude non lo rivede per 30 giorni. Nessun cookie.</p>
+						</td>
+					</tr>
+					<tr>
 						<th scope="row">Box autore</th>
 						<td>
 							<?php self::checkbox( 'author_box', 'Mostra il box autore in fondo agli articoli' ); ?>

@@ -24,6 +24,7 @@ class Young_SEO {
 			'disclosure_text' => self::DEFAULT_DISCLOSURE,
 			'updated_date'    => true,
 			'preferred_source' => true,
+			'newsletter_popup' => true,
 			'author_box'      => false,
 			'domain_fix'      => true,
 			'old_hosts'       => 'you-ng.it, www.you-ng.it',
@@ -52,7 +53,7 @@ class Young_SEO {
 	public static function sanitize( $input ) {
 		$input = (array) $input;
 		$out   = array();
-		foreach ( array( 'ai_disclosure', 'updated_date', 'preferred_source', 'author_box', 'domain_fix', 'llms', 'news_sitemap', 'theme_meta_fix' ) as $key ) {
+		foreach ( array( 'ai_disclosure', 'updated_date', 'preferred_source', 'newsletter_popup', 'author_box', 'domain_fix', 'llms', 'news_sitemap', 'theme_meta_fix' ) as $key ) {
 			$out[ $key ] = ! empty( $input[ $key ] );
 		}
 		$out['disclosure_text'] = sanitize_textarea_field( $input['disclosure_text'] ?? '' );
