@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Young Archivio
  * Description: Accesso da amministratore, tramite chiave, per la manutenzione dell'archivio di young.it da parte di Claude: tutta l'API REST di WordPress più strumenti di ricerca e sostituzione in tutto il database, con prova a vuoto e annullamento.
- * Version:     1.0.0
+ * Version:     1.1.0
  * Requires PHP: 7.4
  * Author:      YOUng
  * License:     GPL-2.0-or-later
@@ -14,12 +14,13 @@ defined( 'ABSPATH' ) || exit;
 
 final class Young_Archivio {
 
-	const VERSION = '1.0.0';
+	const VERSION = '1.1.0';
 	const OPTION  = 'young_archivio_token';   // array( hash, user_id, created, last_used )
 	const HEADER  = 'HTTP_X_ARCHIVIO_TOKEN';  // intestazione X-Archivio-Token
 	const NS      = 'young-archivio/v1';
 	const TABLE   = 'young_archivio_log';
 	const LIFETIME = 30 * DAY_IN_SECONDS;
+	const RULES    = 'young_archivio_output_rules'; // sostituzioni nell'HTML delle pagine pubbliche
 
 	/** Opzioni che la sostituzione non tocca mai. */
 	const PROTECTED_OPTIONS = array( 'siteurl', 'home', 'active_plugins', 'template', 'stylesheet', 'cron', 'rewrite_rules', 'db_version', 'initial_db_version', self::OPTION );
@@ -35,9 +36,11 @@ final class Young_Archivio {
 		add_filter( 'determine_current_user', array( __CLASS__, 'determine_user' ), 40 );
 		add_filter( 'rest_authentication_errors', array( __CLASS__, 'rest_auth' ), 99 );
 		add_action( 'rest_api_init', array( __CLASS__, 'routes' ) );
+		add_action( 'template_redirect', array( __CLASS__, 'start_buffer' ), 0 );
 		add_action( 'admin_menu', array( __CLASS__, 'menu' ) );
 		add_action( 'admin_post_young_archivio_token', array( __CLASS__, 'create_token' ) );
 		add_action( 'admin_post_young_archivio_revoke', array( __CLASS__, 'revoke_token' ) );
+		add_action( 'admin_post_young_archivio_use', array( __CLASS__, 'use_token' ) );
 	}
 
 	/* ---------- installazione ---------- */
@@ -72,8 +75,38 @@ final class Young_Archivio {
 		return false !== strpos( (string) wp_parse_url( $uri, PHP_URL_PATH ), $prefix );
 	}
 
+	/**
+	 * La chiave arriva in X-Archivio-Token oppure in "Authorization: Bearer": così una sola chiave
+	 * (quella di Young MCP del sito principale) può valere per entrambi i siti sullo stesso dominio.
+	 */
 	private static function presented() {
-		return empty( $_SERVER[ self::HEADER ] ) ? '' : trim( (string) wp_unslash( $_SERVER[ self::HEADER ] ) ); // phpcs:ignore
+		if ( ! empty( $_SERVER[ self::HEADER ] ) ) {
+			return trim( (string) wp_unslash( $_SERVER[ self::HEADER ] ) ); // phpcs:ignore
+		}
+		$headers = array();
+		foreach ( array( 'HTTP_AUTHORIZATION', 'REDIRECT_HTTP_AUTHORIZATION' ) as $key ) {
+			if ( ! empty( $_SERVER[ $key ] ) ) {
+				$headers[] = (string) wp_unslash( $_SERVER[ $key ] ); // phpcs:ignore
+			}
+		}
+		if ( function_exists( 'getallheaders' ) ) {
+			foreach ( (array) getallheaders() as $name => $value ) {
+				if ( 'authorization' === strtolower( (string) $name ) ) {
+					$headers[] = (string) $value;
+				}
+			}
+		}
+		foreach ( $headers as $h ) {
+			if ( preg_match( '/^\s*Bearer\s+(\S+)\s*$/i', $h, $m ) ) {
+				return $m[1];
+			}
+		}
+		return '';
+	}
+
+	/** Chiave generata qui (yarc_) o chiave di Young MCP del sito principale (ymcp_). */
+	private static function valid_format( $token ) {
+		return (bool) preg_match( '/^(yarc_[A-Za-z0-9]{40}|ymcp_[a-f0-9]{48})$/', (string) $token );
 	}
 
 	public static function determine_user( $user_id ) {
@@ -92,7 +125,7 @@ final class Young_Archivio {
 	private static function check_token( $user_id ) {
 		$token = self::presented();
 		// Solo API, solo HTTPS (in locale si può provare con YOUNG_ARCHIVIO_ALLOW_HTTP), chiave nel formato giusto.
-		if ( '' === $token || ! self::is_rest_request() || ! preg_match( '/^yarc_[A-Za-z0-9]{40}$/', $token ) ) {
+		if ( '' === $token || ! self::is_rest_request() || ! self::valid_format( $token ) ) {
 			return $user_id;
 		}
 		if ( ! is_ssl() && ! ( defined( 'YOUNG_ARCHIVIO_ALLOW_HTTP' ) && YOUNG_ARCHIVIO_ALLOW_HTTP ) ) {
@@ -124,6 +157,44 @@ final class Young_Archivio {
 		return self::$authed ? true : $result;
 	}
 
+	/* ---------- correzioni dell'HTML pubblico (testi fissi nel tema) ---------- */
+
+	/**
+	 * Le regole stanno nell'opzione young_archivio_output_rules: una lista di
+	 * { "cerca": "...", "sostituisci": "...", "regex": false }. Valgono solo per le pagine pubbliche.
+	 */
+	public static function start_buffer() {
+		if ( is_admin() || is_feed() || wp_doing_ajax() || ( defined( 'REST_REQUEST' ) && REST_REQUEST ) || is_robots() ) {
+			return;
+		}
+		$rules = get_option( self::RULES );
+		if ( empty( $rules ) || ! is_array( $rules ) ) {
+			return;
+		}
+		ob_start(
+			static function ( $html ) use ( $rules ) {
+				return self::apply_rules( (string) $html, $rules );
+			}
+		);
+	}
+
+	public static function apply_rules( $html, $rules ) {
+		foreach ( $rules as $r ) {
+			if ( ! is_array( $r ) || ! isset( $r['cerca'], $r['sostituisci'] ) || '' === (string) $r['cerca'] ) {
+				continue;
+			}
+			if ( ! empty( $r['regex'] ) ) {
+				$out = @preg_replace( (string) $r['cerca'], (string) $r['sostituisci'], $html ); // phpcs:ignore
+				if ( null !== $out ) {
+					$html = $out;
+				}
+			} else {
+				$html = str_replace( (string) $r['cerca'], (string) $r['sostituisci'], $html );
+			}
+		}
+		return $html;
+	}
+
 	/* ---------- strumenti ---------- */
 
 	public static function routes() {
@@ -153,6 +224,7 @@ final class Young_Archivio {
 			'scrivi_opzione' => 'tool_set_option',
 			'sql'           => 'tool_sql',
 			'svuota_cache'  => 'tool_flush',
+			'prova_regole'  => 'tool_test_rules',
 		);
 		if ( ! isset( $map[ $tool ] ) ) {
 			return new WP_Error( 'young_archivio_tool', 'Strumento sconosciuto. Disponibili: ' . implode( ', ', array_keys( $map ) ), array( 'status' => 400 ) );
@@ -408,6 +480,32 @@ final class Young_Archivio {
 		return array( 'righe' => is_array( $rows ) ? array_slice( $rows, 0, 500 ) : array(), 'errore' => $wpdb->last_error );
 	}
 
+	/** Applica le regole (quelle date o quelle salvate) a una pagina del sito e restituisce i pezzi cambiati. */
+	private static function tool_test_rules( $args ) {
+		$rules = isset( $args['regole'] ) ? (array) $args['regole'] : (array) get_option( self::RULES, array() );
+		$url   = isset( $args['url'] ) ? esc_url_raw( (string) $args['url'] ) : home_url( '/' );
+		if ( 0 !== strpos( $url, home_url() ) ) {
+			return new WP_Error( 'young_archivio_url', 'Solo pagine di questo sito.', array( 'status' => 400 ) );
+		}
+		$res = wp_remote_get( add_query_arg( 'ya_nocache', time(), $url ), array( 'timeout' => 30, 'redirection' => 0 ) );
+		if ( is_wp_error( $res ) ) {
+			return $res;
+		}
+		$before = (string) wp_remote_retrieve_body( $res );
+		$after  = self::apply_rules( $before, $rules );
+		$hits   = array();
+		foreach ( $rules as $i => $r ) {
+			$n = 0;
+			if ( ! empty( $r['regex'] ) ) {
+				$n = (int) @preg_match_all( (string) $r['cerca'], $before ); // phpcs:ignore
+			} elseif ( isset( $r['cerca'] ) && '' !== (string) $r['cerca'] ) {
+				$n = substr_count( $before, (string) $r['cerca'] );
+			}
+			$hits[] = array( 'regola' => $i, 'trovate' => $n );
+		}
+		return array( 'url' => $url, 'stato' => wp_remote_retrieve_response_code( $res ), 'regole' => $hits, 'cambiata' => $before !== $after, 'lunghezza_prima' => strlen( $before ), 'lunghezza_dopo' => strlen( $after ) );
+	}
+
 	private static function tool_flush() {
 		$done = array( 'oggetti' );
 		wp_cache_flush();
@@ -461,6 +559,23 @@ final class Young_Archivio {
 		exit;
 	}
 
+	/** Usa una chiave già esistente, per esempio quella di Young MCP del sito principale. */
+	public static function use_token() {
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_die( 'Permesso negato.' );
+		}
+		check_admin_referer( 'young_archivio_use' );
+		$token = isset( $_POST['chiave'] ) ? trim( (string) wp_unslash( $_POST['chiave'] ) ) : ''; // phpcs:ignore
+		if ( ! self::valid_format( $token ) ) {
+			wp_safe_redirect( add_query_arg( 'young_archivio_error', '1', self::page_url() ) );
+			exit;
+		}
+		self::install();
+		update_option( self::OPTION, array( 'hash' => hash( 'sha256', $token ), 'user_id' => get_current_user_id(), 'created' => time(), 'last_used' => 0 ), false );
+		wp_safe_redirect( add_query_arg( 'young_archivio_saved', '1', self::page_url() ) );
+		exit;
+	}
+
 	public static function revoke_token() {
 		if ( ! current_user_can( 'manage_options' ) ) {
 			wp_die( 'Permesso negato.' );
@@ -491,9 +606,21 @@ final class Young_Archivio {
 			submit_button( 'Revoca la chiave', 'delete', 'submit', false );
 			echo '</form>';
 		}
+		if ( isset( $_GET['young_archivio_error'] ) ) { // phpcs:ignore
+			echo '<div class="notice notice-error"><p>Chiave non valida: deve iniziare con ymcp_ (Young MCP) o yarc_.</p></div>';
+		}
+		if ( isset( $_GET['young_archivio_saved'] ) ) { // phpcs:ignore
+			echo '<div class="notice notice-success"><p>Chiave salvata.</p></div>';
+		}
+		echo '<h2>Usa la chiave di Young MCP del sito principale</h2><p>Incolla qui la chiave creata in Young MCP su young.it (inizia con <code>ymcp_</code>): la stessa chiave varrà per entrambi i siti. Qui ne resta solo l\'impronta cifrata.</p>';
+		echo '<form method="post" action="' . esc_url( admin_url( 'admin-post.php' ) ) . '"><input type="hidden" name="action" value="young_archivio_use">';
+		wp_nonce_field( 'young_archivio_use' );
+		echo '<p><input type="password" name="chiave" class="large-text code" autocomplete="off" placeholder="ymcp_…"></p>';
+		submit_button( 'Salva questa chiave', 'primary', 'submit', false );
+		echo '</form><h2>Oppure genera una chiave solo per l\'archivio</h2>';
 		echo '<form method="post" action="' . esc_url( admin_url( 'admin-post.php' ) ) . '" style="margin-top:1em"><input type="hidden" name="action" value="young_archivio_token">';
 		wp_nonce_field( 'young_archivio_token' );
-		submit_button( is_array( $rec ) ? 'Genera una chiave nuova (sostituisce quella attuale)' : 'Genera la chiave', 'primary', 'submit', false );
+		submit_button( is_array( $rec ) ? 'Genera una chiave nuova (sostituisce quella attuale)' : 'Genera la chiave', 'secondary', 'submit', false );
 		echo '</form></div>';
 	}
 }
