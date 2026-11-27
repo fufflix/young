@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       Young SEO
  * Description:       Piccole aggiunte editoriali e SEO per young.it, compatibili con Yoast SEO: nota sull'uso dell'intelligenza artificiale, pulsante "fonte preferita su Google", popup della newsletter, data di aggiornamento visibile, box autore, correzione del vecchio dominio e /llms.txt.
- * Version:           1.4.0
+ * Version:           1.4.1
  * Requires at least: 6.2
  * Requires PHP:      7.4
  * Author:            Young.it
@@ -13,7 +13,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'YOUNG_SEO_VERSION', '1.4.0' );
+define( 'YOUNG_SEO_VERSION', '1.4.1' );
 define( 'YOUNG_SEO_DIR', plugin_dir_path( __FILE__ ) );
 
 require_once YOUNG_SEO_DIR . 'includes/class-young-seo.php';
@@ -22,6 +22,7 @@ require_once YOUNG_SEO_DIR . 'includes/class-young-seo-domain.php';
 require_once YOUNG_SEO_DIR . 'includes/class-young-seo-llms.php';
 require_once YOUNG_SEO_DIR . 'includes/class-young-seo-news.php';
 require_once YOUNG_SEO_DIR . 'includes/class-young-seo-popup.php';
+require_once YOUNG_SEO_DIR . 'includes/class-young-seo-toc.php';
 
 Young_SEO::init();
 Young_SEO_Content::init();
@@ -29,6 +30,7 @@ Young_SEO_Domain::init();
 Young_SEO_Llms::init();
 Young_SEO_News::init();
 Young_SEO_Popup::init();
+Young_SEO_Toc::init();
 
 register_activation_hook( __FILE__, array( 'Young_SEO_Llms', 'activate' ) );
 register_deactivation_hook( __FILE__, array( 'Young_SEO_Llms', 'deactivate' ) );

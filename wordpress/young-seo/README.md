@@ -4,13 +4,15 @@ Piccolo componente aggiuntivo per young.it, pensato per affiancare **Yoast SEO**
 
 ## Installazione
 
-1. Zippa la cartella `wordpress/young-seo` (o usa `young-seo-1.4.0.zip`).
+1. Zippa la cartella `wordpress/young-seo` (o usa `young-seo-1.4.1.zip`).
 2. WordPress → Plugin → Aggiungi nuovo → Carica plugin → attiva.
 3. Impostazioni → Young SEO: controlla gli interruttori e salva.
 4. Se `/llms.txt` o `/news-sitemap.xml` rispondono 404: Impostazioni → Permalink → **Salva** (rigenera le regole di riscrittura). Funziona comunque `https://young.it/?young_llms=1`.
 5. Con Cloudflare/cache di pagina: svuota la cache dopo l'attivazione.
 
 ## Novità 1.4
+
+- 1.4.1: l'indice «In questo articolo» nella colonna laterale scorre da solo quando è più alto dello schermo (articoli con molti sottotitoli) e tiene in vista la voce del capitolo che si sta leggendo.
 
 - Popup della newsletter negli articoli: testo della redazione e pulsante verso newsletter.fufflix.it (Ghost). Compare a metà lettura o dopo 30 secondi, mai sopra il banner dei cookie di YOUng Core; chiuso, torna dopo 30 giorni; dopo il clic su «Iscriviti», dopo un anno. Nessun cookie (localStorage `young_nl_popup`). Interruttore «Popup newsletter» (attivo).
 
