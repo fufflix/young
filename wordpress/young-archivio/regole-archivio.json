@@ -38,5 +38,25 @@
   "cerca": "#<!-- Global site tag \\(gtag\\.js\\) - Google Analytics -->\\s*<script async src=\"https://www\\.googletagmanager\\.com/gtag/js\\?id=UA-28701801-2\"></script>\\s*<script>.*?gtag\\('config', 'UA-28701801-2'\\);\\s*</script>#s",
   "sostituisci": "",
   "regex": true
+ },
+ {
+  "cerca": "#<a href=\"https://www\\.comnpay\\.com/\"><img[^>]*comnpay\\.png[^>]*></a>#",
+  "sostituisci": "",
+  "regex": true
+ },
+ {
+  "cerca": "<a href=\"https://young.it/sostienici\" class=\"btn btn-outline-warning\">",
+  "sostituisci": "<a href=\"https://young.it/sostienici/\" class=\"btn btn-outline-warning\">",
+  "regex": false
+ },
+ {
+  "cerca": "#(<img class=\"img-fluid nopadding\" src=\"[^\"]*bp-cover-image\\.jpg\" alt=\"Sostienici\">)#",
+  "sostituisci": "<a href=\"https://young.it/sostienici/\" aria-label=\"Sostieni YOUng\">$1</a>",
+  "regex": true
+ },
+ {
+  "cerca": "href=\"https://newsletter.fufflix.it/\"",
+  "sostituisci": "href=\"https://newsletter.fufflix.it/#/portal/signup/free\"",
+  "regex": false
  }
 ]

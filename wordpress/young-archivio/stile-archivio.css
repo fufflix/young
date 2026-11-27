@@ -1,0 +1,72 @@
+/* YOUng Archivio: grafica allineata al sito nuovo (caratteri, colori, intestazione, schede, fondo pagina). */
+:root{--ya-ink:#171615;--ya-text:#24221F;--ya-muted:#6A655F;--ya-paper:#FBFBFA;--ya-sup:#F1F0ED;--ya-line:#E1DED9;--ya-accent:#F49814;--ya-link:#1F3A4D;--ya-ui:"Schibsted Grotesk",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;--ya-serif:"Newsreader",Georgia,serif}
+html body{background:var(--ya-paper);color:var(--ya-text);font-family:var(--ya-ui)}
+/* Intestazione chiara come sul sito nuovo */
+html body header{background:var(--ya-paper)!important;border-bottom:1px solid var(--ya-line)}
+html body header .navbar{background:transparent!important}
+html body header .orange-line{background:var(--ya-accent)}
+html body header .navbar-brand img.logo{height:44px;width:auto;max-width:none}
+html body header .btn-outline-primary{color:var(--ya-ink)!important;border:1px solid #7F7973!important;border-radius:8px!important;background:transparent!important}
+html body header .btn-outline-primary .fa{color:var(--ya-ink)!important}
+html body header #header-search{filter:invert(1) brightness(.15)}
+html body #cat-menu-mobile-container{background:var(--ya-paper)!important;border-top:1px solid var(--ya-line)}
+html body #cat-menu-mobile-container a.text-white,html body #cat-menu-mobile-container .text-white{color:var(--ya-ink)!important;font-family:var(--ya-ui);font-size:15px;font-weight:500;text-transform:none;letter-spacing:0}
+html body #cat-menu-mobile-container .menu-entry.text-white{color:var(--ya-line)!important}
+html body #cat-menu-mobile{text-transform:none!important}
+html body #cat-menu-mobile-container a.text-white:hover{color:var(--ya-accent)!important;text-decoration:none}
+/* Banner dello sponsor */
+.ya-sponsor{max-width:1200px;margin:136px auto 0;padding:0 15px}
+.ya-sponsor + .site-content{margin-top:22px!important}
+.ya-sponsor__t{margin:0 0 8px;font-family:var(--ya-ui);font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--ya-muted)}
+.ya-sponsor a{display:block;line-height:0}
+.ya-sponsor img{display:block;width:100%;height:auto;border-radius:4px}
+/* Titolo e informazioni dell'articolo */
+html body #article-main-content .jumbotron{background:transparent!important;padding:24px 0 8px!important;border-bottom:1px solid var(--ya-line);margin-bottom:0}
+html body #article-main-content .jumbotron .container{padding-left:15px;padding-right:15px;width:auto!important;max-width:100%!important;margin:0!important}
+html body #article-main-content h1.display-4{font-family:var(--ya-serif);font-weight:600;font-size:46px;line-height:1.12;letter-spacing:-.5px;color:var(--ya-ink);margin-top:0!important}
+html body .news-other-author-inf,html body .durata,html body .news-other-author-inf a{font-family:var(--ya-ui);font-size:14px;color:var(--ya-muted)!important}
+html body .news-other-author-link{color:var(--ya-ink)!important;font-weight:600}
+html body .durata b{color:var(--ya-ink)}
+/* Testo dell'articolo */
+html body .article-single{font-family:var(--ya-serif);font-size:20px;line-height:1.7;color:var(--ya-text);padding-left:15px!important;padding-right:15px!important}
+html body .article-single p,html body .article-single li{font-family:var(--ya-serif);font-size:20px;line-height:1.7;color:var(--ya-text)}
+html body .article-single h2{font-family:var(--ya-serif);font-weight:600;font-size:30px;line-height:1.2;color:var(--ya-ink);margin:1.4em 0 .5em}
+html body .article-single h3,html body .article-single h4{font-family:var(--ya-serif);font-weight:600;font-size:22px;line-height:1.25;color:var(--ya-ink);margin:1.3em 0 .4em}
+html body .article-single a{color:var(--ya-link);text-decoration:none;border-bottom:1px solid #C9CED6}
+html body .article-single a:hover{border-bottom-color:var(--ya-link)}
+html body .article-single blockquote{border-left:3px solid var(--ya-accent);padding-left:18px;color:var(--ya-text);font-style:italic}
+html body .article-single img{height:auto;max-width:100%}
+/* Schede laterali e box autore */
+html body .card.sostienici-card,html body .card.rubriche-card,html body .card.author-card{background:var(--ya-sup)!important;border:0!important;border-radius:12px!important;overflow:visible}
+html body .card-title.sostienici-title,html body .card-title.author-title,html body .rubriche-category{background:transparent!important;color:var(--ya-muted)!important;font-family:var(--ya-ui)!important;font-size:12px!important;font-weight:700!important;letter-spacing:.12em;text-transform:uppercase;text-align:left!important;padding:18px 20px 0!important;margin:0!important;position:static!important;height:auto!important;width:auto!important;box-shadow:none!important}
+html body .rubriche-category *:not(.fa){color:var(--ya-muted)!important;font-size:12px!important;font-family:var(--ya-ui)!important;background:transparent!important;padding:0!important}
+html body .card.sostienici-card .img-fluid{border-radius:8px;margin:12px 20px 0!important;width:calc(100% - 40px)!important;max-width:calc(100% - 40px)!important}
+html body .card.sostienici-card .card-body,html body .card.sostienici-card .card-body *{font-family:var(--ya-ui)}
+html body .card.sostienici-card .card-body h5,html body .card.sostienici-card .card-body p{color:var(--ya-ink);font-size:17px;font-weight:600;line-height:1.35}
+html body .card .btn,html body .sostienici-card a.btn,html body .btn-warning{background:var(--ya-accent)!important;color:var(--ya-ink)!important;border:0!important;border-radius:8px!important;font-family:var(--ya-ui)!important;font-weight:600!important;font-size:15px!important;padding:12px 18px!important;box-shadow:none!important;text-transform:none!important}
+html body .rubriche-title-link,html body .rubriche-title-link *:not(.fa){font-family:var(--ya-serif)!important;font-weight:600!important;font-size:19px!important;line-height:1.3!important;color:var(--ya-ink)!important;text-transform:none!important;border:0!important;text-decoration:none!important}
+html body .rubriche-title-link:hover,html body .rubriche-title-link:hover *:not(.fa){color:var(--ya-accent)!important}
+html body .rubriche-card [style*="height: 3px"],html body .rubriche-card hr{background:var(--ya-line)!important;height:1px!important}
+html body .rubriche-author-link,html body .rubriche-author-link *:not(.fa){font-family:var(--ya-ui)!important;font-size:13px!important;color:var(--ya-muted)!important}
+html body .author-card .author-name,html body .author-card a{color:var(--ya-ink)!important;font-family:var(--ya-ui);font-weight:600}
+html body .author-card,html body .author-card p{font-family:var(--ya-ui);color:var(--ya-text)}
+/* Fondo pagina chiaro come sul sito nuovo */
+html body footer{background:var(--ya-paper)!important;color:var(--ya-text)!important;border-top:1px solid var(--ya-line);font-family:var(--ya-ui)}
+html body footer h6{color:var(--ya-muted)!important;font-family:var(--ya-ui);font-size:13px!important;font-weight:700;letter-spacing:.12em;text-transform:uppercase}
+html body footer,html body footer span:not(.fa),html body footer div,html body footer p,html body footer li{color:var(--ya-text)}
+html body footer img[src*="young-logo-2026"]{max-width:190px;height:auto}
+html body footer a,html body footer a.text-white,html body footer .text-white{color:var(--ya-ink)!important;font-weight:600}
+html body footer a:hover{color:var(--ya-accent)!important;text-decoration:none}
+html body footer #myBtn,html body footer #myBtn b{color:var(--ya-ink)!important}
+html body footer .fa-stack .fa-circle,html body footer .fa-stack .fa-stack-2x{color:var(--ya-sup)!important}
+html body footer .fa-stack .fa-stack-1x{color:var(--ya-ink)!important}
+html body .young-background,html body #row-contatti.young-background{background:var(--ya-sup)!important;color:var(--ya-muted)!important}
+html body .young-background span,html body .young-background a{color:var(--ya-muted)!important;font-family:var(--ya-ui);font-size:13px}
+/* Telefono */
+@media (max-width:767px){
+ html body #article-main-content h1.display-4{font-size:32px;line-height:1.15}
+ html body .article-single,html body .article-single p,html body .article-single li{font-size:18px;line-height:1.65}
+ html body header .navbar-brand img.logo{height:36px}
+ .ya-sponsor{margin-top:132px}
+ .ya-sponsor + .site-content{margin-top:12px!important}
+}

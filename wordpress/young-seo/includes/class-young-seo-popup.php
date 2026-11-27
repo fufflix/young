@@ -10,7 +10,7 @@ defined( 'ABSPATH' ) || exit;
 
 class Young_SEO_Popup {
 
-	const URL = 'https://newsletter.fufflix.it/';
+	const URL = 'https://newsletter.fufflix.it/#/portal/signup/free';
 
 	public static function init() {
 		add_action( 'wp_footer', array( __CLASS__, 'render' ), 50 );

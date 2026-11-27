@@ -4,6 +4,7 @@
  * Negli articoli molto lunghi la colonna è più alta dello schermo e le ultime voci restavano tagliate:
  * qui la colonna prende al massimo l'altezza dello schermo e scorre da sola, solo quando serve.
  * Uno script tiene in vista la voce del capitolo che si sta leggendo.
+ * Il riquadro "Come lavoriamo" sta sopra l'indice (l'indice va per ultimo nella colonna).
  */
 
 defined( 'ABSPATH' ) || exit;
@@ -23,7 +24,7 @@ class Young_SEO_Toc {
 		if ( ! self::applies() ) {
 			return;
 		}
-		echo '<style id="young-toc-css">@media (min-width:1025px){.e-con:has(> .yg-toc){max-height:calc(100vh - 124px);overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:#C9C4BD transparent;padding-right:6px}.e-con:has(> .yg-toc) > *{flex-shrink:0}body.admin-bar .e-con:has(> .yg-toc){max-height:calc(100vh - 156px)}.e-con:has(> .yg-toc)::-webkit-scrollbar{width:6px}.e-con:has(> .yg-toc)::-webkit-scrollbar-thumb{background:#C9C4BD;border-radius:3px}}</style>' . "\n";
+		echo '<style id="young-toc-css">@media (min-width:1025px){.e-con:has(> .yg-toc){max-height:calc(100vh - 124px);overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:#C9C4BD transparent;padding-right:6px}.e-con:has(> .yg-toc) > *{flex-shrink:0}.e-con:has(> .yg-toc) > .yg-toc{order:2}body.admin-bar .e-con:has(> .yg-toc){max-height:calc(100vh - 156px)}.e-con:has(> .yg-toc)::-webkit-scrollbar{width:6px}.e-con:has(> .yg-toc)::-webkit-scrollbar-thumb{background:#C9C4BD;border-radius:3px}}</style>' . "\n";
 	}
 
 	public static function script() {

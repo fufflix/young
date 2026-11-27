@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       Young SEO
  * Description:       Piccole aggiunte editoriali e SEO per young.it, compatibili con Yoast SEO: nota sull'uso dell'intelligenza artificiale, pulsante "fonte preferita su Google", popup della newsletter, data di aggiornamento visibile, box autore, correzione del vecchio dominio e /llms.txt.
- * Version:           1.4.1
+ * Version:           1.4.2
  * Requires at least: 6.2
  * Requires PHP:      7.4
  * Author:            Young.it
@@ -13,7 +13,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'YOUNG_SEO_VERSION', '1.4.1' );
+define( 'YOUNG_SEO_VERSION', '1.4.2' );
 define( 'YOUNG_SEO_DIR', plugin_dir_path( __FILE__ ) );
 
 require_once YOUNG_SEO_DIR . 'includes/class-young-seo.php';
