@@ -8,7 +8,8 @@ html body header .orange-line{background:var(--ya-accent)}
 html body header .navbar-brand img.logo{height:44px;width:auto;max-width:none}
 html body header .btn-outline-primary{color:var(--ya-ink)!important;border:1px solid #7F7973!important;border-radius:8px!important;background:transparent!important}
 html body header .btn-outline-primary .fa{color:var(--ya-ink)!important}
-html body header #header-search{filter:invert(1) brightness(.15)}
+html body header #header-search{filter:none;color:transparent!important;font-size:0!important;background:transparent url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23171615' stroke-width='2.2' stroke-linecap='round'%3E%3Ccircle cx='10.5' cy='10.5' r='6.5'/%3E%3Cpath d='M15.5 15.5 21 21'/%3E%3C/svg%3E") center/20px 20px no-repeat!important}
+html body header #header-search::before{content:none!important}
 html body #cat-menu-mobile-container{background:var(--ya-paper)!important;border-top:1px solid var(--ya-line)}
 html body #cat-menu-mobile-container a.text-white,html body #cat-menu-mobile-container .text-white{color:var(--ya-ink)!important;font-family:var(--ya-ui);font-size:15px;font-weight:500;text-transform:none;letter-spacing:0}
 html body #cat-menu-mobile-container .menu-entry.text-white{color:var(--ya-line)!important}
@@ -69,4 +70,5 @@ html body .young-background span,html body .young-background a{color:var(--ya-mu
  html body header .navbar-brand img.logo{height:36px}
  .ya-sponsor{margin-top:132px}
  .ya-sponsor + .site-content{margin-top:12px!important}
+ html body #article-main-content > .row.mt-md-3{padding-left:15px;padding-right:15px}
 }
