@@ -32,6 +32,7 @@ add_action( 'template_redirect', function () {
 	exit;
 }, 5 );
 
+if ( ! function_exists( 'ya_indice_conteggi' ) ) {
 function ya_indice_conteggi() {
 	$c = get_transient( 'ya_indice_conteggi' );
 	if ( false === $c ) {
@@ -41,16 +42,22 @@ function ya_indice_conteggi() {
 	}
 	return is_array( $c ) ? $c : array();
 }
+}
 
+if ( ! function_exists( 'ya_indice_mese' ) ) {
 function ya_indice_mese( $m ) {
 	$mesi = array( 1 => 'gennaio', 'febbraio', 'marzo', 'aprile', 'maggio', 'giugno', 'luglio', 'agosto', 'settembre', 'ottobre', 'novembre', 'dicembre' );
 	return isset( $mesi[ (int) $m ] ) ? $mesi[ (int) $m ] : '';
 }
+}
 
+if ( ! function_exists( 'ya_indice_anno_label' ) ) {
 function ya_indice_anno_label( $a ) {
 	return ( (int) $a < 2000 ) ? 'Senza data' : (string) $a;
 }
+}
 
+if ( ! function_exists( 'ya_indice_render' ) ) {
 function ya_indice_render( $is404 ) {
 	$conteggi = ya_indice_conteggi();
 	$anni     = array();
@@ -115,6 +122,9 @@ body.ya-indice{margin:0;background:#faf8f4;color:#1c1c1c;font:17px/1.6 Georgia,"
 .ya-pag{margin:24px 0;font-family:Arial,Helvetica,sans-serif}
 .ya-pag .page-numbers{display:inline-block;padding:6px 10px;margin:2px;border:1px solid #ccc;color:#1c1c1c;text-decoration:none}
 .ya-pag .current{background:#1c1c1c;color:#fff;border-color:#1c1c1c}
+.ya-sponsor{margin:0 0 24px;text-align:center}
+.ya-sponsor__t{margin:0 0 4px;font-family:Arial,Helvetica,sans-serif;font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:#777}
+.ya-sponsor img{display:block;width:100%;height:auto}
 .ya-piede{margin-top:48px;padding-top:12px;border-top:1px solid #ccc;font-family:Arial,Helvetica,sans-serif;font-size:14px;color:#555}
 .ya-piede a{color:#1c1c1c}
 </style>
@@ -122,6 +132,7 @@ body.ya-indice{margin:0;background:#faf8f4;color:#1c1c1c;font:17px/1.6 Georgia,"
 <body class="ya-indice">
 <div class="ya-wrap">
 <header class="ya-top"><a href="https://young.it/">YOUng</a><a href="<?php echo esc_url( $base ); ?>">Archivio</a></header>
+<div class="site-content">
 <main>
 <h1><?php echo esc_html( $h1 ); ?></h1>
 <?php if ( $intro ) : ?><p class="ya-intro"><?php echo esc_html( $intro ); ?></p><?php endif; ?>
@@ -131,12 +142,30 @@ body.ya-indice{margin:0;background:#faf8f4;color:#1c1c1c;font:17px/1.6 Georgia,"
 </form>
 <?php
 	if ( $is404 || ( is_home() && ! is_paged() ) ) {
+		$sezioni = array();
+		foreach ( array( 'blog', 'news', 'culture' ) as $slug ) {
+			$t = get_term_by( 'slug', $slug, 'category' );
+			if ( $t && $t->count > 0 ) {
+				$sezioni[] = $t;
+			}
+		}
+		if ( $sezioni ) {
+			echo '<h2>Le sezioni storiche</h2><ul class="ya-griglia">';
+			foreach ( $sezioni as $t ) {
+				echo '<li><a href="' . esc_url( get_term_link( $t ) ) . '">' . esc_html( $t->name ) . '<small>' . esc_html( number_format_i18n( $t->count ) ) . ' articoli</small></a></li>';
+			}
+			echo '</ul>';
+		}
 		echo '<h2>Per anno</h2><ul class="ya-griglia">';
 		foreach ( $anni as $a => $n ) {
 			echo '<li><a href="' . esc_url( $base . $a . '/' ) . '">' . esc_html( ya_indice_anno_label( $a ) ) . '<small>' . esc_html( number_format_i18n( $n ) ) . ' articoli</small></a></li>';
 		}
 		echo '</ul>';
-		$cats = get_terms( array( 'taxonomy' => 'category', 'orderby' => 'count', 'order' => 'DESC', 'number' => 40, 'hide_empty' => true ) );
+		$escludi = array( (int) get_option( 'default_category' ) );
+		foreach ( $sezioni as $t ) {
+			$escludi[] = (int) $t->term_id;
+		}
+		$cats = get_terms( array( 'taxonomy' => 'category', 'orderby' => 'count', 'order' => 'DESC', 'number' => 40, 'hide_empty' => true, 'exclude' => $escludi ) );
 		if ( ! is_wp_error( $cats ) && $cats ) {
 			echo '<h2>Per argomento</h2><ul class="ya-griglia">';
 			foreach ( $cats as $t ) {
@@ -174,10 +203,12 @@ body.ya-indice{margin:0;background:#faf8f4;color:#1c1c1c;font:17px/1.6 Georgia,"
 	}
 ?>
 </main>
+</div>
 <footer class="ya-piede">Archivio di <a href="https://young.it/">YOUng</a>, testata giornalistica di Mastino S.R.L.</footer>
 </div>
 <?php wp_footer(); ?>
 </body>
 </html>
 <?php
+}
 }

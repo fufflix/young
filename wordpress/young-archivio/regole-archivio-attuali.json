@@ -108,5 +108,10 @@
   "cerca": "#https?:\\\\/\\\\/(?:blog|news|culture)\\.you-ng\\.it\\\\/[^\"]*?\\.(?:jpe?g|png|gif)#i",
   "sostituisci": "https://young.it/archivio/wp-content/uploads/2026/11/archivio-young-og.jpg",
   "regex": true
+ },
+ {
+  "cerca": "#\\bPage (\\d+) of (\\d+)\\b#",
+  "sostituisci": "Pagina ${1} di ${2}",
+  "regex": true
  }
 ]
