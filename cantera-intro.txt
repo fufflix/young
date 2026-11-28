@@ -1,0 +1,11 @@
+OCCHIELLO
+Il blog di YOUng
+
+TITOLO
+Cantera
+
+INTRODUZIONE
+La Cantera è il blog di YOUng: lo spazio in cui ospitiamo autori molto diversi tra loro, che scrivono per noi pezzi di attualità, opinioni, racconti e riflessioni personali. Il nome lo abbiamo preso in prestito dal calcio spagnolo, dove la cantera è il vivaio in cui crescono i talenti (qualcuno, poi, arriva anche in prima squadra). Dal 2015 ad oggi ne abbiamo pubblicati oltre 600: li trovate tutti qui sotto, dal più recente.
+
+META DESCRIPTION (Yoast, archivio Cantera)
+La Cantera è il blog di YOUng: autori diversi scrivono per noi pezzi di attualità, opinioni, racconti e riflessioni. Oltre 600 articoli dal 2015 ad oggi.
