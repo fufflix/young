@@ -1,0 +1,112 @@
+[
+ {
+  "cerca": "#<form class=\"sml_subscribe\"[^>]*>.*?</form>#s",
+  "sostituisci": "<p class=\"ya-newsletter\" style=\"margin:1em 0;text-align:center\"><a class=\"btn btn-warning\" href=\"https://newsletter.fufflix.it/\" target=\"_blank\" rel=\"noopener\" style=\"font-weight:700\">Iscriviti alla newsletter</a></p>",
+  "regex": true
+ },
+ {
+  "cerca": "#<div class=\"checkbox form-check\">\\s*<label class=\"form-check-label\">\\s*<input class=\"form-check-input\" type=\"checkbox\" id=\"checkbox\"[^>]*>.*?consenso per ricevere newsletter.*?</label>\\s*</div>#s",
+  "sostituisci": "",
+  "regex": true
+ },
+ {
+  "cerca": "Lasciaci la tua mail, la useremo per comunicarti le <b>news più importanti</b>",
+  "sostituisci": "Iscriviti per ricevere le <b>news più importanti</b>",
+  "regex": false
+ },
+ {
+  "cerca": "#YOUng - Slow Journalism è una testata giornalistica di proprietà di Young S\\.R\\.L\\.<br>\\s*Registrazione Trib\\. di Nocera Inferiore \\(SA\\) n° 4 del 23/10/2014<br>\\s*P\\.IVA: 05093030657#u",
+  "sostituisci": "YOUng Slow Journalism è una testata giornalistica di proprietà di Mastino S.R.L., registrata presso il Tribunale di Santa Maria Capua Vetere, n. 900 del 31/01/2025. ISSN 3103-4683<br>P.IVA: 04755530617",
+  "regex": true
+ },
+ {
+  "cerca": "#©2015 YOUng - Tutti i diritti riservati\\s+P\\.IVA: 05093030657#u",
+  "sostituisci": "© 2026 Mastino S.R.L. - Tutti i diritti riservati - P.IVA: 04755530617",
+  "regex": true
+ },
+ {
+  "cerca": "SP 336 km 20600, Zona Industriale Marcianise Nord - 81025 (CE) - Presso Elteide Spa",
+  "sostituisci": "Mastino S.R.L., Via Lorenzo Maria Neroni 11, 81100 Caserta",
+  "regex": false
+ },
+ {
+  "cerca": "#Young s\\.?r\\.?l\\.?#i",
+  "sostituisci": "Mastino S.R.L.",
+  "regex": true
+ },
+ {
+  "cerca": "#<!-- Global site tag \\(gtag\\.js\\) - Google Analytics -->\\s*<script async src=\"https://www\\.googletagmanager\\.com/gtag/js\\?id=UA-28701801-2\"></script>\\s*<script>.*?gtag\\('config', 'UA-28701801-2'\\);\\s*</script>#s",
+  "sostituisci": "",
+  "regex": true
+ },
+ {
+  "cerca": "#<a href=\"https://www\\.comnpay\\.com/\"><img[^>]*comnpay\\.png[^>]*></a>#",
+  "sostituisci": "",
+  "regex": true
+ },
+ {
+  "cerca": "<a href=\"https://young.it/sostienici\" class=\"btn btn-outline-warning\">",
+  "sostituisci": "<a href=\"https://young.it/sostienici/\" class=\"btn btn-outline-warning\">",
+  "regex": false
+ },
+ {
+  "cerca": "#(<img class=\"img-fluid nopadding\" src=\"[^\"]*bp-cover-image\\.jpg\" alt=\"Sostienici\">)#",
+  "sostituisci": "<a href=\"https://young.it/sostienici/\" aria-label=\"Sostieni YOUng\">$1</a>",
+  "regex": true
+ },
+ {
+  "cerca": "href=\"https://newsletter.fufflix.it/\"",
+  "sostituisci": "href=\"https://newsletter.fufflix.it/#/portal/signup/free\"",
+  "regex": false
+ },
+ {
+  "cerca": "</head>",
+  "sostituisci": "<link rel=\"stylesheet\" id=\"ya-gf-newsreader\" href=\"https://young.it/wp-content/uploads/elementor/google-fonts/css/newsreader.css\"><link rel=\"stylesheet\" id=\"ya-gf-schibsted\" href=\"https://young.it/wp-content/uploads/elementor/google-fonts/css/schibstedgrotesk.css\"><style id=\"ya-restyle\">/* YOUng Archivio: grafica allineata al sito nuovo (caratteri, colori, intestazione, schede, fondo pagina). */\n:root{--ya-ink:#171615;--ya-text:#24221F;--ya-muted:#6A655F;--ya-paper:#FBFBFA;--ya-sup:#F1F0ED;--ya-line:#E1DED9;--ya-accent:#F49814;--ya-link:#1F3A4D;--ya-ui:\"Schibsted Grotesk\",system-ui,-apple-system,\"Segoe UI\",Roboto,sans-serif;--ya-serif:\"Newsreader\",Georgia,serif}\nhtml body{background:var(--ya-paper);color:var(--ya-text);font-family:var(--ya-ui)}\n/* Intestazione chiara come sul sito nuovo */\nhtml body header{background:var(--ya-paper)!important;border-bottom:1px solid var(--ya-line)}\nhtml body header .navbar{background:transparent!important}\nhtml body header .orange-line{background:var(--ya-accent)}\nhtml body header .navbar-brand img.logo{height:44px;width:auto;max-width:none}\nhtml body header .btn-outline-primary{color:var(--ya-ink)!important;border:1px solid #7F7973!important;border-radius:8px!important;background:transparent!important}\nhtml body header .btn-outline-primary .fa{color:var(--ya-ink)!important}\nhtml body header #header-search{width:42px!important;height:42px!important;padding:0!important;filter:none;color:transparent!important;font-size:0!important;background:transparent url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23171615' stroke-width='2.2' stroke-linecap='round'%3E%3Ccircle cx='10.5' cy='10.5' r='6.5'/%3E%3Cpath d='M15.5 15.5 21 21'/%3E%3C/svg%3E\") center/20px 20px no-repeat!important}\nhtml body header #header-search::before{content:none!important}\nhtml body #cat-menu-mobile-container{background:var(--ya-paper)!important;border-top:1px solid var(--ya-line)}\nhtml body #cat-menu-mobile-container a.text-white,html body #cat-menu-mobile-container .text-white{color:var(--ya-ink)!important;font-family:var(--ya-ui);font-size:15px;font-weight:500;text-transform:none;letter-spacing:0}\nhtml body #cat-menu-mobile-container .menu-entry.text-white{color:var(--ya-line)!important}\nhtml body #cat-menu-mobile{text-transform:none!important}\nhtml body #cat-menu-mobile-container a.text-white:hover{color:var(--ya-accent)!important;text-decoration:none}\n/* Banner dello sponsor */\n.ya-sponsor{max-width:1200px;margin:136px auto 0;padding:0 15px}\n.ya-sponsor + .site-content{margin-top:22px!important}\n.ya-sponsor__t{margin:0 0 8px;font-family:var(--ya-ui);font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--ya-muted)}\n.ya-sponsor a{display:block;line-height:0}\n.ya-sponsor img{display:block;width:100%;height:auto;border-radius:4px}\n/* Titolo e informazioni dell'articolo */\nhtml body #article-main-content .jumbotron{background:transparent!important;padding:24px 0 8px!important;border-bottom:1px solid var(--ya-line);margin-bottom:0}\nhtml body #article-main-content .jumbotron .container{padding-left:15px;padding-right:15px;width:auto!important;max-width:100%!important;margin:0!important}\nhtml body #article-main-content h1.display-4{font-family:var(--ya-serif);font-weight:600;font-size:46px;line-height:1.12;letter-spacing:-.5px;color:var(--ya-ink);margin-top:0!important}\nhtml body .news-other-author-inf,html body .durata,html body .news-other-author-inf a{font-family:var(--ya-ui);font-size:14px;color:var(--ya-muted)!important}\nhtml body .news-other-author-link{color:var(--ya-ink)!important;font-weight:600}\nhtml body .durata b{color:var(--ya-ink)}\n/* Testo dell'articolo */\nhtml body .article-single{font-family:var(--ya-serif);font-size:20px;line-height:1.7;color:var(--ya-text);padding-left:15px!important;padding-right:15px!important}\nhtml body .article-single p,html body .article-single li{font-family:var(--ya-serif);font-size:20px;line-height:1.7;color:var(--ya-text)}\nhtml body .article-single h2{font-family:var(--ya-serif);font-weight:600;font-size:30px;line-height:1.2;color:var(--ya-ink);margin:1.4em 0 .5em}\nhtml body .article-single h3,html body .article-single h4{font-family:var(--ya-serif);font-weight:600;font-size:22px;line-height:1.25;color:var(--ya-ink);margin:1.3em 0 .4em}\nhtml body .article-single a{color:var(--ya-link);text-decoration:none;border-bottom:1px solid #C9CED6}\nhtml body .article-single a:hover{border-bottom-color:var(--ya-link)}\nhtml body .article-single blockquote{border-left:3px solid var(--ya-accent);padding-left:18px;color:var(--ya-text);font-style:italic}\nhtml body .article-single img{height:auto;max-width:100%}\n/* Schede laterali e box autore */\nhtml body .card.sostienici-card,html body .card.rubriche-card,html body .card.author-card{background:var(--ya-sup)!important;border:0!important;border-radius:12px!important;overflow:visible}\nhtml body .card-title.sostienici-title,html body .card-title.author-title,html body .rubriche-category{background:transparent!important;color:var(--ya-muted)!important;font-family:var(--ya-ui)!important;font-size:12px!important;font-weight:700!important;letter-spacing:.12em;text-transform:uppercase;text-align:left!important;padding:18px 20px 0!important;margin:0!important;position:static!important;height:auto!important;width:auto!important;box-shadow:none!important}\nhtml body .rubriche-category *:not(.fa){color:var(--ya-muted)!important;font-size:12px!important;font-family:var(--ya-ui)!important;background:transparent!important;padding:0!important}\nhtml body .card.sostienici-card .img-fluid{border-radius:8px;margin:12px 20px 0!important;width:calc(100% - 40px)!important;max-width:calc(100% - 40px)!important}\nhtml body .card.sostienici-card .card-body,html body .card.sostienici-card .card-body *{font-family:var(--ya-ui)}\nhtml body .card.sostienici-card .card-body h5,html body .card.sostienici-card .card-body p{color:var(--ya-ink);font-size:17px;font-weight:600;line-height:1.35}\nhtml body .card .btn,html body .sostienici-card a.btn,html body .btn-warning{background:var(--ya-accent)!important;color:var(--ya-ink)!important;border:0!important;border-radius:8px!important;font-family:var(--ya-ui)!important;font-weight:600!important;font-size:15px!important;padding:12px 18px!important;box-shadow:none!important;text-transform:none!important}\nhtml body .rubriche-title-link,html body .rubriche-title-link *:not(.fa){font-family:var(--ya-serif)!important;font-weight:600!important;font-size:19px!important;line-height:1.3!important;color:var(--ya-ink)!important;text-transform:none!important;border:0!important;text-decoration:none!important}\nhtml body .rubriche-title-link:hover,html body .rubriche-title-link:hover *:not(.fa){color:var(--ya-accent)!important}\nhtml body .rubriche-card [style*=\"height: 3px\"],html body .rubriche-card hr{background:var(--ya-line)!important;height:1px!important}\nhtml body .rubriche-author-link,html body .rubriche-author-link *:not(.fa){font-family:var(--ya-ui)!important;font-size:13px!important;color:var(--ya-muted)!important}\nhtml body .author-card .author-name,html body .author-card a{color:var(--ya-ink)!important;font-family:var(--ya-ui);font-weight:600}\nhtml body .author-card,html body .author-card p{font-family:var(--ya-ui);color:var(--ya-text)}\n/* Fondo pagina chiaro come sul sito nuovo */\nhtml body footer{background:var(--ya-paper)!important;color:var(--ya-text)!important;border-top:1px solid var(--ya-line);font-family:var(--ya-ui)}\nhtml body footer h6{color:var(--ya-muted)!important;font-family:var(--ya-ui);font-size:13px!important;font-weight:700;letter-spacing:.12em;text-transform:uppercase}\nhtml body footer,html body footer span:not(.fa),html body footer div,html body footer p,html body footer li{color:var(--ya-text)}\nhtml body footer img[src*=\"young-logo-2026\"]{max-width:190px;height:auto}\nhtml body footer a,html body footer a.text-white,html body footer .text-white{color:var(--ya-ink)!important;font-weight:600}\nhtml body footer a:hover{color:var(--ya-accent)!important;text-decoration:none}\nhtml body footer #myBtn,html body footer #myBtn b{color:var(--ya-ink)!important}\nhtml body footer .fa-stack .fa-circle,html body footer .fa-stack .fa-stack-2x{color:var(--ya-sup)!important}\nhtml body footer .fa-stack .fa-stack-1x{color:var(--ya-ink)!important}\nhtml body .young-background,html body #row-contatti.young-background{background:var(--ya-sup)!important;color:var(--ya-muted)!important}\nhtml body .young-background span,html body .young-background a{color:var(--ya-muted)!important;font-family:var(--ya-ui);font-size:13px}\n/* Telefono */\n@media (max-width:767px){\n html body #article-main-content h1.display-4{font-size:32px;line-height:1.15}\n html body .article-single,html body .article-single p,html body .article-single li{font-size:18px;line-height:1.65}\n html body header .navbar-brand img.logo{height:36px}\n .ya-sponsor{margin-top:132px}\n .ya-sponsor + .site-content{margin-top:12px!important}\n html body #article-main-content > .row.mt-md-3{padding-left:15px;padding-right:15px}\n}\n</style></head>",
+  "regex": false
+ },
+ {
+  "cerca": "https://young.it/archivio/wp-content/themes/young/img/young_inverse.png",
+  "sostituisci": "https://young.it/wp-content/uploads/2026/11/young-logo-2026.webp",
+  "regex": false
+ },
+ {
+  "cerca": "<div class=\"site-content\">",
+  "sostituisci": "<aside class=\"ya-sponsor\" aria-label=\"Sponsor etico\"><p class=\"ya-sponsor__t\">Sponsor etico</p><a href=\"https://www.alpegno1977.net/acquista?utm_source=young.it&amp;utm_medium=referral&amp;utm_campaign=fufflix_young&amp;utm_content=banner_archivio\" target=\"_blank\" rel=\"sponsored noopener\" title=\"Al Pegno 1977\"><img src=\"https://young.it/wp-content/uploads/2026/09/leader_board.png.webp\" srcset=\"https://young.it/wp-content/uploads/2026/09/leader_board-768x130.png.webp 768w, https://young.it/wp-content/uploads/2026/09/leader_board-1536x260.png.webp 1536w, https://young.it/wp-content/uploads/2026/09/leader_board.png.webp 1840w\" sizes=\"(max-width: 1230px) 92vw, 1170px\" width=\"1840\" height=\"312\" alt=\"Al Pegno 1977\" loading=\"eager\" decoding=\"async\"></a></aside><div class=\"site-content\">",
+  "regex": false
+ },
+ {
+  "cerca": "#https://young\\.it/archivio/wp-content/uploads/((?:2014/07/Action-Park-Morti-Vernon|2015/05/shellrent)\\.jpg)#",
+  "sostituisci": "https://young.it/wp-content/uploads/sites/5/$1",
+  "regex": true
+ },
+ {
+  "cerca": "#<title>Archivio YOUng \\| #",
+  "sostituisci": "<title>",
+  "regex": true
+ },
+ {
+  "cerca": "#<(div|figure)[^>]*class=\"[^\"]*wp-caption[^\"]*\"[^>]*>\\s*(?:<a[^>]*>\\s*)?<img[^>]*src=\"https?://(?:blog|news|culture)\\.you-ng\\.it/[^\"]*\"[^>]*>\\s*(?:</a>\\s*)?(?:<(?:p|figcaption)[^>]*wp-caption-text[^>]*>.*?</(?:p|figcaption)>\\s*)?</\\1>#s",
+  "sostituisci": "",
+  "regex": true
+ },
+ {
+  "cerca": "#<a[^>]*>\\s*<img[^>]*src=\"https?://(?:blog|news|culture)\\.you-ng\\.it/[^\"]*\"[^>]*>\\s*</a>#",
+  "sostituisci": "",
+  "regex": true
+ },
+ {
+  "cerca": "#<img[^>]*src=\"https?://(?:blog|news|culture)\\.you-ng\\.it/[^\"]*\"[^>]*>#",
+  "sostituisci": "",
+  "regex": true
+ },
+ {
+  "cerca": "#(<meta (?:property|name)=\"(?:og:image|twitter:image)(?::secure_url)?\" content=\")https?://(?:blog|news|culture)\\.you-ng\\.it/[^\"]*(\")#",
+  "sostituisci": "${1}https://young.it/archivio/wp-content/uploads/2026/11/archivio-young-og.jpg${2}",
+  "regex": true
+ },
+ {
+  "cerca": "#https?:\\\\/\\\\/(?:blog|news|culture)\\.you-ng\\.it\\\\/[^\"]*?\\.(?:jpe?g|png|gif)#i",
+  "sostituisci": "https://young.it/archivio/wp-content/uploads/2026/11/archivio-young-og.jpg",
+  "regex": true
+ }
+]
